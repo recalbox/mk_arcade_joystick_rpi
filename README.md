@@ -1,4 +1,4 @@
-mk_arcade_joystick_rpi
+mk_arcade_joystick_rpi - Work in progress
 ==============
 
 
@@ -13,17 +13,21 @@ A little cheap chip named MCP23017 allows you to add 16 external GPIO, and take 
 
 The Software 
 -------------
-The joystick driver is based on the game_gpio_rpi driver by marqs (link required)
+The joystick driver is based on the gamecon_gpio_rpi driver by [marqs](https://github.com/marqs85)
 It can read one joystick + buttons wired on RPi GPIOs and up to 5 other joysticks + buttons from MCP23017 chips. One MCP23017 is required for each joystick.
 It uses internal pull-ups of RPi and MCP23017, so all switchs must be connected to its corresponding GPIO and to the ground.
 
 Pinout
 -------------
 Here is the GPIO pinout summary :
+
+
 ![GPIO Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
 
 
 And here is the MCP23017 pinout summary :
+
+
 ![MCP23017 Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
 
 Of course the ground can be common for all switches.
@@ -75,4 +79,20 @@ So if you have a joystick connected to RPi GPIOs and a joystick on a MCP23017 wi
 sudo modprobe mk_arcade_joystick_rpi map=1,0x20
 ```
 
-The GPIO joystick events will be reported to the file "/dev/input/js0" and the mcp23017 joystick events will be reported to "/dev/input/js0"
+
+The GPIO joystick events will be reported to the file "/dev/input/js0" and the mcp23017 joystick events will be reported to "/dev/input/js1"
+
+Testing
+-------------
+
+Use the following command to test joysticks inputs :
+```shell
+jstest /dev/input/js0
+```
+
+
+Credits
+-------------
+-  [gamecon_gpio_rpi](https://github.com/petrockblog/RetroPie-Setup/wiki/gamecon_gpio_rpi) by [marqs](https://github.com/marqs85)
+-  [RetroPie-Setup](https://github.com/petrockblog/RetroPie-Setup) by [petRockBlog](http://blog.petrockblock.com/)
+-  [Low Level Programming of the Raspberry Pi in C](http://www.pieter-jan.com/node/1) by [Pieter-Jan](http://www.pieter-jan.com/)
