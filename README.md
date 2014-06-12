@@ -95,4 +95,4 @@ Credits
 -------------
 -  [gamecon_gpio_rpi](https://github.com/petrockblog/RetroPie-Setup/wiki/gamecon_gpio_rpi) by [marqs](https://github.com/marqs85)
 -  [RetroPie-Setup](https://github.com/petrockblog/RetroPie-Setup) by [petRockBlog](http://blog.petrockblock.com/)
--  [Low Level Programming of the Raspberry Pi in C](http://www.pieter-jan.com/node/1) by [Pieter-Jan](http://www.pieter-jan.com/)
+-  [Low Level Programming of the Raspberry Pi in C](http://www.pieter-jan.com/node/15) by [Pieter-Jan](http://www.pieter-jan.com/)
