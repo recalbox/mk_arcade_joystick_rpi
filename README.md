@@ -4,18 +4,18 @@ mk_arcade_joystick_rpi - Work in progress
 
 Introduction
 -------------
-The RaspberryPi is an amazing tool i discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
-The Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 24 switchs (2 joystick and 16 buttons) that a standard panel require.
+The RaspberryPi is an amazing tool I discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
+The Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 24 switches (2 joystick and 16 buttons) that a standard panel requires.
 
 A hardware solution
 -------------
-A little cheap chip named MCP23017 allows you to add 16 external GPIO, and take only two GPIO on the RPi. The chip allows you to use GPIO as output or input, input is what we are looking for.
+A little cheap chip named MCP23017 allows you to add 16 external GPIO, and take only two GPIO on the RPi. The chip allows you to use GPIO as output or input, input is what we are looking for. If you want to use more than one chip, the i2c protocol lets you choose different addresses for the connected peripheral, but all use the same SDA and SCL GPIOs.
 
 The Software 
 -------------
 The joystick driver is based on the gamecon_gpio_rpi driver by [marqs](https://github.com/marqs85)
 It can read one joystick + buttons wired on RPi GPIOs and up to 5 other joysticks + buttons from MCP23017 chips. One MCP23017 is required for each joystick.
-It uses internal pull-ups of RPi and MCP23017, so all switchs must be connected to its corresponding GPIO and to the ground.
+It uses internal pull-ups of RPi and MCP23017, so all switches must be connected to its corresponding GPIO and to the ground.
 
 Pinout
 -------------
@@ -43,7 +43,7 @@ apt-get update
 apt-get install -y --force-yes dkms gcc-4.7
 ```
 
-Install headers
+Install last kernel headers
 ```shell
 wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
@@ -53,7 +53,7 @@ rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 Install driver
 ```shell
 cd /usr/src
-sudo git clone ADDRESS HERE mk_arcade_joystick_rpi-0.1.0
+sudo git clone https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git mk_arcade_joystick_rpi-0.1.0
 cd mk_arcade_joystick_rpi-0.1.0
 sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.0
 sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.0
@@ -64,7 +64,7 @@ Configuration
 When you want to load the driver you must pass a list of parameters that represent the list of connected Joysticks. The first parameter will be the joystick mapped to /dev/input/js0, the second to js1 etc..
 
 If you have connected a joystick on RPi GPIOs you must pass "1" as a parameter.
-If you have connected one or more joysticks with MCP23017, you must pass the address of I2C peripherials connected, wich you can get with the command :
+If you have connected one or more joysticks with MCP23017, you must pass the address of I2C peripherals connected, which you can get with the command :
 
 ```shell
 sudo i2cdetect -y 1
@@ -90,6 +90,10 @@ Use the following command to test joysticks inputs :
 jstest /dev/input/js0
 ```
 
+Known Bugs
+-------------
+If you try to read or write on i2c with a tool like i2cget or i2cset when the driver is loaded, you are gonna have a bad time... 
+If you try i2cdetect when the driver is running, it will show you strange peripheral addresses...
 
 Credits
 -------------
