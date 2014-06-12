@@ -61,7 +61,7 @@ cd mk_arcade_joystick_rpi-0.1.0
 sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.0
 sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.0
 cd ..
-sudo rm mk_arcade_joystick_rpi-0.1.0
+sudo rm -rf mk_arcade_joystick_rpi-0.1.0
 ```
 
 Configuration 
