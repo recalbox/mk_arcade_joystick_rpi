@@ -37,10 +37,10 @@ Compilation
 
 You need to have the last firmware installed.
 
-Install gcc
+Install all you need :
 ```shell
 apt-get update
-apt-get install -y --force-yes dkms gcc-4.7
+apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
 ```
 
 Install last kernel headers
@@ -53,10 +53,12 @@ rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 Install driver
 ```shell
 cd /usr/src
-sudo git clone https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git mk_arcade_joystick_rpi-0.1.0
+sudo git clone --depth=0 https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git mk_arcade_joystick_rpi-0.1.0
 cd mk_arcade_joystick_rpi-0.1.0
 sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.0
 sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.0
+cd ..
+sudo rm mk_arcade_joystick_rpi-0.1.0
 ```
 
 Configuration 
