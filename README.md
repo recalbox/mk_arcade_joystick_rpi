@@ -5,6 +5,7 @@ mk_arcade_joystick_rpi - Work in progress
 Introduction
 -------------
 The RaspberryPi is an amazing tool I discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
+
 The Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 24 switches (2 joystick and 16 buttons) that a standard panel requires.
 
 A hardware solution
@@ -14,7 +15,9 @@ A little cheap chip named MCP23017 allows you to add 16 external GPIO, and take 
 The Software 
 -------------
 The joystick driver is based on the gamecon_gpio_rpi driver by [marqs](https://github.com/marqs85)
+
 It can read one joystick + buttons wired on RPi GPIOs and up to 5 other joysticks + buttons from MCP23017 chips. One MCP23017 is required for each joystick.
+
 It uses internal pull-ups of RPi and MCP23017, so all switches must be connected to its corresponding GPIO and to the ground.
 
 Pinout
@@ -43,14 +46,14 @@ apt-get update
 apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
 ```
 
-Install last kernel headers
+Install last kernel headers :
 ```shell
 wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 ```
 
-Install driver
+Install driver :
 ```shell
 cd /usr/src
 sudo git clone --depth=0 https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git mk_arcade_joystick_rpi-0.1.0
@@ -66,6 +69,7 @@ Configuration
 When you want to load the driver you must pass a list of parameters that represent the list of connected Joysticks. The first parameter will be the joystick mapped to /dev/input/js0, the second to js1 etc..
 
 If you have connected a joystick on RPi GPIOs you must pass "1" as a parameter.
+
 If you have connected one or more joysticks with MCP23017, you must pass the address of I2C peripherals connected, which you can get with the command :
 
 ```shell
@@ -73,6 +77,7 @@ sudo i2cdetect -y 1
 ```
 
 The configuration of each MCP23017 is done by setting pads A0 A1 and A2 to 0 or 1.
+
 If you configured your MCP23017 with A0 A1 and A2 connected to the ground, the address returned by i2cdetect should be 0x20
 
 So if you have a joystick connected to RPi GPIOs and a joystick on a MCP23017 with the address 0x20, in order to load the driver, you must run the command :
@@ -95,6 +100,7 @@ jstest /dev/input/js0
 Known Bugs
 -------------
 If you try to read or write on i2c with a tool like i2cget or i2cset when the driver is loaded, you are gonna have a bad time... 
+
 If you try i2cdetect when the driver is running, it will show you strange peripheral addresses...
 
 Credits
