@@ -53,7 +53,13 @@ dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 ```
 
-Install driver :
+Install driver from release (prefered):
+```shell
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.0/mk-arcade-joystick-rpi-0.1.0.deb
+sudo dpkg -i mk-arcade-joystick-rpi-0.1.0.deb
+```
+
+Install driver from sources :
 ```shell
 cd /usr/src
 sudo git clone --depth=0 https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git mk_arcade_joystick_rpi-0.1.0
@@ -63,6 +69,7 @@ sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.0
 cd ..
 sudo rm -rf mk_arcade_joystick_rpi-0.1.0
 ```
+
 
 Configuration 
 -------------
