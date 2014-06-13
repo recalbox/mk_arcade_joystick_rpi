@@ -56,7 +56,7 @@ Check if you have a line with :
 ```shell
 i2c-bcm2708 
 ```
-and a # the beginning of the line to remove the blacklisting
+and add a # at the beginning of the line to remove the blacklisting
 
 Reboot or load the two module :
 ```shell
