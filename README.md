@@ -35,6 +35,34 @@ And here is the MCP23017 pinout summary :
 
 Of course the ground can be common for all switches.
 
+Preparation 
+-------------
+Activate i2c on your RPi :
+```shell
+sudo nano /etc/modules
+```
+Add the following lines in order to load i2c modules automatically :
+```shell
+i2c-bcm2708 
+i2c-dev
+```
+
+And if the file /etc/modprobe.d/raspi-blacklist.conf exists : 
+```shell
+sudo nano /etc/modprobe.d/raspi-blacklist.conf
+```
+
+Check if you have a line with :
+```shell
+i2c-bcm2708 
+```
+and a # the beginning of the line to remove the blacklisting
+
+Reboot or load the two module :
+```shell
+modprobe i2c-bcm2708 i2c-dev
+```
+
 Compilation 
 -------------
 
@@ -43,7 +71,7 @@ You need to have the last firmware installed.
 Install all you need :
 ```shell
 apt-get update
-apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
+apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick i2c-tools
 ```
 
 Install last kernel headers :
