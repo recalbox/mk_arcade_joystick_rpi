@@ -35,7 +35,7 @@ And here is the MCP23017 pinout summary :
 
 Of course the ground can be common for all switches.
 
-Preparation 
+Preparation of the RPi
 -------------
 Activate i2c on your RPi :
 ```shell
@@ -62,6 +62,15 @@ Reboot or load the two module :
 ```shell
 modprobe i2c-bcm2708 i2c-dev
 ```
+
+Preparation of the MCP23017 :
+-------------
+
+You must set the pins A0 A1 and A2 to 0 or 1 in order to set the i2c address of the chip. If you only have 1 chip, connect the 3 pins to the ground.
+Just connect one of the pins to 3.3v to set its state to 1 and change the i2c address of the MCP23017.
+
+You must also connect the RESET pin to 3.3v.
+
 
 Compilation 
 -------------
@@ -121,8 +130,13 @@ So if you have a joystick connected to RPi GPIOs and a joystick on a MCP23017 wi
 sudo modprobe mk_arcade_joystick_rpi map=1,0x20
 ```
 
-
 The GPIO joystick events will be reported to the file "/dev/input/js0" and the mcp23017 joystick events will be reported to "/dev/input/js1"
+
+I tested up to 3 joystick, one on GPIOs, one on a MCP23017 on address 0x20, one on a MCP23017 on address 0x24 :
+
+```shell
+sudo modprobe mk_arcade_joystick_rpi map=1,0x20,0x24
+```
 
 Testing
 -------------
