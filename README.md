@@ -63,7 +63,7 @@ Reboot or load the two module :
 modprobe i2c-bcm2708 i2c-dev
 ```
 
-Preparation of the MCP23017 :
+Preparation of the MCP23017
 -------------
 
 You must set the pins A0 A1 and A2 to 0 or 1 in order to set the i2c address of the chip. If you only have 1 chip, connect the 3 pins to the ground.
