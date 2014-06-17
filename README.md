@@ -16,7 +16,10 @@ The Software
 -------------
 The joystick driver is based on the gamecon_gpio_rpi driver by [marqs](https://github.com/marqs85)
 
+It is written for 4 directions joysticks and 8 buttons per player.
+
 It can read one joystick + buttons wired on RPi GPIOs and up to 5 other joysticks + buttons from MCP23017 chips. One MCP23017 is required for each joystick.
+
 
 It uses internal pull-ups of RPi and MCP23017, so all switches must be connected to its corresponding GPIO and to the ground.
 
