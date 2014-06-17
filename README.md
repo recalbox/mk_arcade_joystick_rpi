@@ -1,4 +1,4 @@
-mk_arcade_joystick_rpi - Work in progress
+mk_arcade_joystick_rpi
 ==============
 
 
@@ -154,6 +154,8 @@ Known Bugs
 If you try to read or write on i2c with a tool like i2cget or i2cset when the driver is loaded, you are gonna have a bad time... 
 
 If you try i2cdetect when the driver is running, it will show you strange peripheral addresses...
+
+256MB Raspberry Pi Model B is not supported by the current driver. If you want to make the driver work on your old RPi, you will have to change the address of BSC1_BASE to (BCM2708_PERI_BASE + 0x205000) in order to use the correct i2c address, and recompile.
 
 Credits
 -------------
