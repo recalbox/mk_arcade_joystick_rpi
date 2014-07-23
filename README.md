@@ -7,7 +7,9 @@ Introduction
 -------------
 The RaspberryPi is an amazing tool I discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
 
-The Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
+So i started to wire my joysticks and buttons to my raspberry pi, and I wrote the first half of this driver in order to wire my joysticks and buttons directly to the RPi GPIOs.
+
+However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
 A hardware solution
 -------------
@@ -21,8 +23,7 @@ It is written for 4 directions joysticks and 10 buttons per player.
 
 It can read one joystick + buttons wired on RPi GPIOs and up to 5 other joysticks + buttons from MCP23017 chips. One MCP23017 is required for each joystick.
 
-
-It uses internal pull-ups of RPi and MCP23017, so all switches must be connected to its corresponding GPIO and to the ground.
+It uses internal pull-ups of RPi and of MCP23017, so all switches must be directly connected to its corresponding GPIO and to the ground.
 
 Pinout
 -------------
