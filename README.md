@@ -39,9 +39,9 @@ It uses internal pull-ups of RPi and of MCP23017, so all switches must be direct
 ### Pinout ###
 Let's consider a 6 buttons cab panel with this button order : 
 
- ↑   Ⓨ Ⓧ Ⓛ
-← →	 Ⓑ Ⓐ Ⓡ
- ↓
+     ↑   Ⓨ Ⓧ Ⓛ  
+    ← →	 Ⓑ Ⓐ Ⓡ  
+     ↓  
 
 With R = TR and L = TL
 
