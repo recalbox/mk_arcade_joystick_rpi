@@ -133,6 +133,19 @@ sudo modprobe mk_arcade_joystick_rpi map=1,2
 
 The GPIO joystick 1 events will be reported to the file "/dev/input/js0" and the GPIO joystick 2  events will be reported to "/dev/input/js1"
 
+### Auto load at startup ###
+
+Open /etc/modules :
+
+```shell
+sudo nano /etc/modules
+```
+
+And add the line you use to load the driver : 
+
+```shell
+mk_arcade_joystick_rpi map=1,2
+```
 
 ### Testing ###
 
