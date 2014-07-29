@@ -71,7 +71,7 @@ Reboot if necessary, and re-run the script without any arguments :
 sudo ./install.sh
 ```
 
-Now jump to [Loading the driver]
+Now jump to [Loading the driver][]
 
 
 ### Manual Installation ###
