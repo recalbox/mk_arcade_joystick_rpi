@@ -7,6 +7,8 @@ then
 	sudo rpi-update
 	echo "Please reboot if the message above asks for it"
 else
+	echo "Installing required dependencies"
+	sudo apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
 	echo "Downloading current kernel headers"
 	wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 	echo "Installing current kernel headers"
