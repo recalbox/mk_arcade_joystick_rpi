@@ -37,9 +37,16 @@ It uses internal pull-ups of RPi and of MCP23017, so all switches must be direct
 
 
 ### Pinout ###
+Let's consider a 6 buttons cab panel with this button order : 
+
+ ↑   Ⓨ Ⓧ Ⓛ
+← →	 Ⓑ Ⓐ Ⓡ
+ ↓
+
+With R = TR and L = TL
+
 
 Here is the rev B GPIO pinout summary :
-
 
 ![GPIO Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
 
