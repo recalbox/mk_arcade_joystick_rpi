@@ -8,12 +8,12 @@ then
 	echo "Please reboot if the message above asks for it"
 else
 	echo "Downloading current kernel headers"
-	#wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
+	wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 	echo "Installing current kernel headers"
-	#sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-	#rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
+	sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
+	rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 	echo "Downloading mk_arcade_joystick_rpi 0.1.1"
-	#wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.1/mk-arcade-joystick-rpi-0.1.1.deb
+	wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.1/mk-arcade-joystick-rpi-0.1.1.deb
 	echo "Installing mk_arcade_joystick_rpi 0.1.1"
 	sudo dpkg -i mk-arcade-joystick-rpi-0.1.1.deb
 	if [ "$?" -eq "0" ] 
