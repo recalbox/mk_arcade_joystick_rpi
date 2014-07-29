@@ -1,5 +1,5 @@
 Package: mk-arcade-joystick-rpi-dkms
-Version: 0.1.0
+Version: 0.1.1
 Architecture: all
 Maintainer: DigitalLumberjack <digitallumberjack@gmail.com>
 Installed-Size: 74

@@ -119,6 +119,7 @@ MODULE_PARM_DESC(map, "Enable or disable GPIO and MCP23017 Arcade Joystick");
 enum mk_type {
     MK_NONE = 0,
     MK_ARCADE_GPIO,
+    MK_ARCADE_GPIO_BPLUS,
     MK_ARCADE_MCP23017,
     MK_MAX
 };
@@ -157,23 +158,24 @@ struct mk_subdev {
 
 static struct mk *mk_base;
 
-static const int mk_max_arcade_buttons = 14;
+static const int mk_max_arcade_buttons = 12;
 
-// Map of the gpios :                    up, down, left, right, start, select, a, b, tr, tr2, y,  x,  tl, tl2
-static const int mk_arcade_gpio_maps[] = {4,  17,   27,    22,   10,      9,  11, 7, 8,  25,  24, 23, 18, 15};
+// Map of the gpios :                     up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
+static const int mk_arcade_gpio_maps[] = {4,  17,    27,  22,    10,    9,      25, 24, 23, 18, 15, 14 };
+// 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
+static const int mk_arcade_gpio_maps_bplus[] = {11, 5,    6,    13,    19,    26,     21, 20, 16, 12, 7,  8 };
+// Map of the mcp23017 on GPIOA            up, down, left, right, start, select
+static const int mk_arcade_gpioa_maps[] = {0,  1,    2,    3,     4,     5      };
 
-// Map of the mcp23017 on GPIOA        up, down, left, right, start, select
-static const int mk_arcade_gpioa_maps[] = {0, 1, 2, 3, 4, 5};
-
-// Map of the mcp23017 on GPIOB            a, b, tr, tr2, y, x, tl, tl2
-static const int mk_arcade_gpiob_maps[] = {0, 1,  2,  3,  4, 5, 6,  7};
+// Map of the mcp23017 on GPIOB            a, b, tr, y, x, tl
+static const int mk_arcade_gpiob_maps[] = {0, 1, 2,  3, 4, 5 };
 
 static const short mk_arcade_gpio_btn[] = {
-    BTN_START, BTN_SELECT, BTN_A, BTN_B, BTN_TR, BTN_TR2, BTN_Y, BTN_X, BTN_TL, BTN_TL2
+    BTN_START, BTN_SELECT, BTN_A, BTN_B, BTN_TR, BTN_Y, BTN_X, BTN_TL
 };
 
 static const char *mk_names[] = {
-    NULL, "Arcade GPIO Controller", "Arcade MCP23017 Controller"
+    NULL, "Arcade GPIO Controller", "2nd Arcade GPIO Controller B+", "Arcade MCP23017 Controller"
 };
 
 /* GPIO UTILS */
@@ -265,19 +267,28 @@ static void mk_mcp23017_read_packet(struct mk_pad * pad, unsigned char *data) {
     // read buttons on gpioa
     for (i = 4; i < 6; i++) {
         data[i] = !((resultA >> mk_arcade_gpioa_maps[i]) & 0x1);
-    }    
+    }
     // read buttons on gpiob
-    for (i = 0; i < 8; i++) {
-        data[i + 4] = !((resultB >> (mk_arcade_gpiob_maps[i])) & 0x1);
+    for (i = 6; i < 12; i++) {
+        data[i] = !((resultB >> (mk_arcade_gpiob_maps[i-6])) & 0x1);
     }
 }
 
-static void mk_gpio_read_packet(unsigned char *data) {
+static void mk_gpio_read_packet(struct mk_pad * pad, unsigned char *data) {
     int i;
-    for (i = 0; i < mk_max_arcade_buttons; i++) {
-        int read = GPIO_READ(mk_arcade_gpio_maps[i]);
-        if (read == 0) data[i] = 1;
-        else data[i] = 0;
+    // Duplicate code to avoid the if at each loop
+    if (pad->type == MK_ARCADE_GPIO) {
+        for (i = 0; i < mk_max_arcade_buttons; i++) {
+            int read = GPIO_READ(mk_arcade_gpio_maps[i]);
+            if (read == 0) data[i] = 1;
+            else data[i] = 0;
+        }
+    }else if (pad->type == MK_ARCADE_GPIO_BPLUS) {
+         for (i = 0; i < mk_max_arcade_buttons; i++) {
+            int read = GPIO_READ(mk_arcade_gpio_maps_bplus[i]);
+            if (read == 0) data[i] = 1;
+            else data[i] = 0;
+        }
     }
 }
 
@@ -286,7 +297,7 @@ static void mk_input_report(struct mk_pad * pad, unsigned char * data) {
     int j;
     input_report_abs(dev, ABS_Y, !data[0]-!data[1]);
     input_report_abs(dev, ABS_X, !data[2]-!data[3]);
-    for (j = 4; j < 14; j++) {
+    for (j = 4; j < mk_max_arcade_buttons; j++) {
         input_report_key(dev, mk_arcade_gpio_btn[j - 4], data[j]);
     }
     input_sync(dev);
@@ -300,8 +311,8 @@ static void mk_process_packet(struct mk *mk) {
 
     for (i = 0; i < MK_MAX_DEVICES; i++) {
         pad = &mk->pads[i];
-        if (pad->type == MK_ARCADE_GPIO) {
-            mk_gpio_read_packet(data);
+        if (pad->type == MK_ARCADE_GPIO || pad->type == MK_ARCADE_GPIO_BPLUS) {
+            mk_gpio_read_packet(pad, data);
             mk_input_report(pad, data);
         }
         if (pad->type == MK_ARCADE_MCP23017) {
@@ -353,9 +364,13 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     int i, pad_type;
     int err;
     char FF = 0xFF;
+    pr_err("pad type : %d\n",pad_type_arg);
 
     if (pad_type_arg == MK_ARCADE_GPIO) {
         pad_type = MK_ARCADE_GPIO;
+    }
+    else if (pad_type_arg == MK_ARCADE_GPIO_BPLUS) {
+        pad_type = MK_ARCADE_GPIO_BPLUS;
     } else {
         pad_type = MK_ARCADE_MCP23017;
     }
@@ -363,7 +378,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         pr_err("Pad type %d unknown\n", pad_type);
         return -EINVAL;
     }
-
+    pr_err("pad type : %d\n",pad_type);
     pad->dev = input_dev = input_allocate_device();
     if (!input_dev) {
         pr_err("Not enough memory for input device\n");
@@ -391,7 +406,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 
     for (i = 0; i < 2; i++)
         input_set_abs_params(input_dev, ABS_X + i, -1, 1, 0, 0);
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < mk_max_arcade_buttons - 4; i++)
         __set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
 
     mk->pad_count[pad_type]++;
@@ -401,7 +416,14 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps[i]);
             }
-            setGpioPullUps(0xBC68F90);
+            setGpioPullUps(0xBC6C610);
+            printk("GPIO configured for pad%d\n", idx);
+            break;
+        case MK_ARCADE_GPIO_BPLUS:
+            for (i = 0; i < mk_max_arcade_buttons; i++) {
+                setGpioAsInput(mk_arcade_gpio_maps_bplus[i]);
+            }
+            setGpioPullUps(0xFFFFFF0);
             printk("GPIO configured for pad%d\n", idx);
             break;
         case MK_ARCADE_MCP23017:
@@ -467,7 +489,7 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
         err = -EINVAL;
         goto err_free_mk;
     }
-    
+
     mutex_init(&mk->mutex);
     setup_timer(&mk->timer, mk_timer, (long) mk);
 
