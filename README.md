@@ -63,12 +63,12 @@ wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/downlo
 
 Update your system : 
 ```shell
-sudo ./install.sh updatesystem
+sudo sh ./install.sh updatesystem
 ```
 
 Reboot if necessary, and re-run the script without any arguments :
 ```shell
-sudo ./install.sh
+sudo sh ./install.sh
 ```
 
 Now jump to [Loading the driver](#loading-the-driver)
