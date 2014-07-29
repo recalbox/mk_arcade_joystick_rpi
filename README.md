@@ -33,7 +33,7 @@ It can read one joystick + buttons wired on RPi GPIOs (two on RPi B+ revision) a
 It uses internal pull-ups of RPi and of MCP23017, so all switches must be directly connected to its corresponding GPIO and to the ground.
 
 
-## Common Case : Joysticks connected on GPIOs ##
+## Common Case : Joysticks connected to GPIOs ##
 
 
 ### Pinout ###
@@ -57,6 +57,8 @@ You need to have an up to date system :
 sudo apt-get update
 sudo apt-get upgrade
 sudo rpi-update
+```
+
 
 1 - Install all you need :
 ```shell
