@@ -50,7 +50,7 @@ If you have a Rev B+ RPi :
 
 Of course the ground can be common for all switches.
 
-### INSTALLATION ###
+### Installation ###
 
 ### Installation Script ###
 
@@ -143,7 +143,7 @@ jstest /dev/input/js0
 
 
 ## More Joysticks case MCP23017 ##
--------------
+
 
 Here is the MCP23017 pinout summary :
 
