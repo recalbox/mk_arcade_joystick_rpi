@@ -53,8 +53,8 @@ MODULE_LICENSE("GPL");
 
 #define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
 
-#define GPIO_SET *(gpio+7)  
-#define GPIO_CLR *(gpio+10) 
+#define GPIO_SET *(gpio+7)
+#define GPIO_CLR *(gpio+10)
 
 #define BSC1_BASE		(BCM2708_PERI_BASE + 0x804000)
 
