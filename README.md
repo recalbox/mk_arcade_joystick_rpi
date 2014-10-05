@@ -110,13 +110,10 @@ sudo dpkg -i mk-arcade-joystick-rpi-0.1.1.deb
 
 3bis- (Alternative option) Install driver from sources :
 ```shell
-cd /usr/src
-sudo git clone --depth=0 https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git mk_arcade_joystick_rpi-0.1.1
-cd mk_arcade_joystick_rpi-0.1.1
-sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.1
-sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.1
-cd ..
-sudo rm -rf mk_arcade_joystick_rpi-0.1.1
+sudo git clone https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git
+cd mk_arcade_joystick_rpi
+./utils/makepackage.sh 0.1.1
+sudo dpkg -i build/mk-arcade-joystick-rpi-0.1.1.deb
 ```
 
 ### Loading the driver ###
