@@ -71,9 +71,10 @@ wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/downlo
 Update your system : 
 ```shell
 sudo sh ./install.sh updatesystem
+sudo reboot
 ```
 
-Reboot if necessary, and re-run the script without any arguments :
+Don't forget to reboot (or the next part won't work) and re-run the script without any arguments :
 ```shell
 sudo sh ./install.sh
 ```
