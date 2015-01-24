@@ -175,7 +175,7 @@ static const short mk_arcade_gpio_btn[] = {
 };
 
 static const char *mk_names[] = {
-    NULL, "Arcade GPIO Controller", "2nd Arcade GPIO Controller B+", "Arcade MCP23017 Controller"
+    NULL, "GPIO Controller 1", "GPIO Controller 2", "MCP23017 Controller"
 };
 
 /* GPIO UTILS */
