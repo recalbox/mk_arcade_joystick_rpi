@@ -193,14 +193,14 @@ static void setGpioAsInput(int gpioNum) {
 }
 
 /* I2C UTILS */
-static void i2c_init() {
+static void i2c_init(void) {
     INP_GPIO(2);
     SET_GPIO_ALT(2, 0);
     INP_GPIO(3);
     SET_GPIO_ALT(3, 0);
 }
 
-static void wait_i2c_done() {
+static void wait_i2c_done(void) {
     while ((!((BSC1_S) & BSC_S_DONE))) {
         udelay(100);
     }
@@ -233,7 +233,8 @@ static void i2c_read(char dev_addr, char reg_addr, char *buf, unsigned short len
 
     i2c_write(dev_addr, reg_addr, NULL, 0);
 
-    unsigned short bufidx = 0;
+    unsigned short bufidx;
+    bufidx = 0;
 
     memset(buf, 0, len); // clear the buffer
 
