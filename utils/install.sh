@@ -3,11 +3,13 @@
 if [ "$1" = "updatesystem" ]
 then
 	echo "update system break module compatibily, use ./install.sh installKernel "
+	exit 0
 	sudo apt-get update
 	sudo apt-get upgrade -y
 	sudo rpi-update
 	echo "Please reboot if the message above asks for it"
 elif  [ "$1" = "installKernel" ]; then
+	echo "will install the last compatible kernel : 3.12.28+"
 	sudo apt-get update
 	sudo apt-get upgrade -y
 	sudo rpi-update de69b134dc6e4066fe70db29816d57895dffd9b9
