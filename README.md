@@ -11,6 +11,10 @@ So i started to wire my joysticks and buttons to my raspberry pi, and I wrote th
 
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
+UPDATE 0.1.2 : Downgrade to 3.12.28+ :
+
+As the module will not load with recent kernel and headers, we add the possibility of downgrading your firmware to a compatible version, until we find a fix.
+
 UPDATE 0.1.1 : RPi B+ VERSION :
 
 The new Raspberry Pi B+ Revision brought us 9 more GPIOs, so we are now able to connect 2 joysticks and 12 buttons directly to GPIOs. I updated the driver in order to support the 2 joysticks on GPIO configuration.
@@ -65,7 +69,7 @@ Download the installation script :
 ```shell
 mkdir mkjoystick
 cd mkjoystick
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.1/install.sh
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.2/install.sh
 ```
 
 As the last kernel headers and firmware make the module incompatible, we are searching a solution.
@@ -107,7 +111,7 @@ sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 
 3 - Install driver from release (prefered):
 ```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.1/mk-arcade-joystick-rpi-0.1.1.deb
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.2/mk-arcade-joystick-rpi-0.1.2.deb
 sudo dpkg -i mk-arcade-joystick-rpi-0.1.1.deb
 ```
 
