@@ -68,11 +68,13 @@ cd mkjoystick
 wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.1/install.sh
 ```
 
-Update your system : 
+As the last kernel headers and firmware make the module incompatible, we are searching a solution.
+Until then, you will have to install the 3.12.28+ kernel with :
 ```shell
-sudo sh ./install.sh updatesystem
+sudo sh ./install.sh installKernel
 sudo reboot
 ```
+
 
 Don't forget to reboot (or the next part won't work) and re-run the script without any arguments :
 ```shell
