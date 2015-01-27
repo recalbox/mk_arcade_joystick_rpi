@@ -85,11 +85,11 @@ Now jump to [Loading the driver](#loading-the-driver)
 
 
 ### Manual Installation ###
-You need to have an up to date system :
+You need to have a system with 3.12.28+ kernel (we're fixing that):
 ```shell
 sudo apt-get update
 sudo apt-get upgrade
-sudo rpi-update
+sudo rpi-update de69b134dc6e4066fe70db29816d57895dffd9b9
 ```
 
 
