@@ -2,10 +2,17 @@
 
 if [ "$1" = "updatesystem" ]
 then
+	echo "update system break module compatibily, use ./install.sh installKernel "
 	sudo apt-get update
 	sudo apt-get upgrade -y
 	sudo rpi-update
 	echo "Please reboot if the message above asks for it"
+elif  [ "$1" = "installKernel" ]
+	sudo apt-get update
+	sudo apt-get upgrade -y
+	sudo rpi-update de69b134dc6e4066fe70db29816d57895dffd9b9
+	echo "Please reboot if the message above asks for it"
+
 else
 	echo "Installing required dependencies"
 	sudo apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
