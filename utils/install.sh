@@ -7,7 +7,7 @@ then
 	sudo apt-get upgrade -y
 	sudo rpi-update
 	echo "Please reboot if the message above asks for it"
-elif  [ "$1" = "installKernel" ]
+elif  [ "$1" = "installKernel" ]; then
 	sudo apt-get update
 	sudo apt-get upgrade -y
 	sudo rpi-update de69b134dc6e4066fe70db29816d57895dffd9b9
