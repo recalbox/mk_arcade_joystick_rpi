@@ -22,7 +22,7 @@ else
          { echo "ERROR : Unable to install kernel headers" && exit 1 ;}
 	rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 	echo "Downloading mk_arcade_joystick_rpi 0.1.1"
-	wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.1/mk-arcade-joystick-rpi-0.1.3.deb || 
+	wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.3/mk-arcade-joystick-rpi-0.1.3.deb || 
          { echo "ERROR : Unable to find mk_arcade_joystick_package" && exit 1 ;}
 	echo "Installing mk_arcade_joystick_rpi 0.1.3"
 	sudo dpkg -i mk-arcade-joystick-rpi-0.1.3.deb || 

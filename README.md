@@ -73,7 +73,7 @@ Download the installation script :
 ```shell
 mkdir mkjoystick
 cd mkjoystick
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/0.1.3/install.sh
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.3/install.sh
 ```
 
 Update your system :
