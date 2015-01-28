@@ -13,7 +13,7 @@ However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not en
 
 UPDATE 0.1.3 : Compatibilyty with 3.18.3 :
 
-As the module will not load with recent kernel and headers, we add the possibility of downgrading your firmware to a compatible version, until we find a fix.
+The driver installation now works with 3.18.3 kernel, distributed with the last firmware.
 
 UPDATE 0.1.2 : Downgrade to 3.12.28+ :
 
@@ -78,7 +78,7 @@ wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/downlo
 
 Update your system :
 ```shell
-sudo sh ./install.sh updateSystem
+sudo sh ./install.sh updatesystem
 sudo reboot
 ```
 
