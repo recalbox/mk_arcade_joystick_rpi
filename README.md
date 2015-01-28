@@ -11,7 +11,7 @@ So i started to wire my joysticks and buttons to my raspberry pi, and I wrote th
 
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
-UPDATE 0.1.3 : Compatibilyty with 3.18.3 :
+UPDATE 0.1.3 : Compatibily with 3.18.3 :
 
 The driver installation now works with 3.18.3 kernel, distributed with the last firmware.
 
