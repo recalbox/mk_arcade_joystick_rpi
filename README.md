@@ -60,7 +60,7 @@ Here is the rev B GPIO pinout summary :
 
 ![GPIO Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
 
-If you have a Rev B+ RPi :
+If you have a Rev B+ RPi or RPi2:
 
 
 ![GPIO Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
@@ -122,7 +122,7 @@ sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 ```
 
-3 - Install driver from release (prefered):
+3 - Install driver from release (prefered):  
 -- RPi1
 ```shell
 wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4-rpi1.deb
