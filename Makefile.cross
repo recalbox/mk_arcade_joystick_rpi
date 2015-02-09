@@ -7,7 +7,9 @@ else
 	ARCH             ?= $(shell uname -i)
 	CROSS_COMPILE    ?=
 	INSTALL_MOD_PATH ?= /
-
+	ifdef RPI2
+		CFLAGS_mk_arcade_joystick_rpi.o := -DRPI2
+	endif
 endif
 
 all: modules
