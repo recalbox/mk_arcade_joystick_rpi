@@ -44,7 +44,11 @@ MODULE_LICENSE("GPL");
 
 #define MK_MAX_DEVICES		9
 
+#ifdef RPI2
 #define PERI_BASE        0x3F000000
+#else
+#define PERI_BASE        0x20000000
+#endif
 
 #define GPIO_BASE                (PERI_BASE + 0x200000) /* GPIO controller */
 
