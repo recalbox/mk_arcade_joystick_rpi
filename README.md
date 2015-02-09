@@ -11,6 +11,8 @@ So i started to wire my joysticks and buttons to my raspberry pi, and I wrote th
 
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
+UPDATE 0.1.4 : Compatibily with rpi2 
+
 UPDATE 0.1.3 : Compatibily with 3.18.3 :
 
 The driver installation now works with 3.18.3 kernel, distributed with the last firmware.
@@ -73,7 +75,16 @@ Download the installation script :
 ```shell
 mkdir mkjoystick
 cd mkjoystick
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.3/install.sh
+```
+For RPi B and B+
+```shell
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install-rpi1.sh
+mv install-rpi1.sh install.sh
+```
+For RPi 2
+```shell
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install-rpi2.sh
+mv install-rpi2.sh install.sh
 ```
 
 Update your system :
@@ -81,7 +92,6 @@ Update your system :
 sudo sh ./install.sh updatesystem
 sudo reboot
 ```
-
 
 Don't forget to reboot (or the next part won't work) and re-run the script without any arguments :
 ```shell
@@ -113,17 +123,24 @@ sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 ```
 
 3 - Install driver from release (prefered):
+-- RPi1
 ```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.3/mk-arcade-joystick-rpi-0.1.3.deb
-sudo dpkg -i mk-arcade-joystick-rpi-0.1.3.deb
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4-rpi1.deb
+sudo dpkg -i mk-arcade-joystick-rpi-0.1.4-rpi1.deb
+```
+
+-- RPi2
+```shell
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4-rpi2.deb
+sudo dpkg -i mk-arcade-joystick-rpi-0.1.4-rpi2.deb
 ```
 
 3bis- (Alternative option) Install driver from sources :
 ```shell
 sudo git clone https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git
 cd mk_arcade_joystick_rpi
-./utils/makepackage.sh 0.1.3
-sudo dpkg -i build/mk-arcade-joystick-rpi-0.1.3.deb
+./utils/makepackage.sh 0.1.4
+sudo dpkg -i build/mk-arcade-joystick-rpi-0.1.4.deb
 ```
 
 ### Loading the driver ###
