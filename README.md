@@ -135,14 +135,6 @@ wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/downlo
 sudo dpkg -i mk-arcade-joystick-rpi-0.1.4-rpi2.deb
 ```
 
-3bis- (Alternative option) Install driver from sources :
-```shell
-sudo git clone https://github.com/digitalLumberjack/mk_arcade_joystick_rpi.git
-cd mk_arcade_joystick_rpi
-./utils/makepackage.sh 0.1.4
-sudo dpkg -i build/mk-arcade-joystick-rpi-0.1.4.deb
-```
-
 ### Loading the driver ###
 
 The driver is loaded with the modprobe command and take one parameter nammed "map" representing connected joysticks. 
