@@ -76,15 +76,9 @@ Download the installation script :
 mkdir mkjoystick
 cd mkjoystick
 ```
-For RPi B and B+
+
 ```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install-rpi1.sh
-mv install-rpi1.sh install.sh
-```
-For RPi 2
-```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install-rpi2.sh
-mv install-rpi2.sh install.sh
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
 ```
 
 Update your system :
@@ -123,16 +117,9 @@ sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 ```
 
 3 - Install driver from release (prefered):  
--- RPi1
 ```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4-rpi1.deb
-sudo dpkg -i mk-arcade-joystick-rpi-0.1.4-rpi1.deb
-```
-
--- RPi2
-```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4-rpi2.deb
-sudo dpkg -i mk-arcade-joystick-rpi-0.1.4-rpi2.deb
+wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
+sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
 ```
 
 ### Loading the driver ###
