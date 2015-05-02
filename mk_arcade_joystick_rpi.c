@@ -433,7 +433,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps_bplus[i]);
             }
-            setGpioPullUps(0x40939E0);
+            setGpioPullUps(0x40939E0 | 0x9C6C01C);
             printk("GPIO configured for pad%d\n", idx);
             break;
         case MK_ARCADE_MCP23017:
