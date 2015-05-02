@@ -174,10 +174,10 @@ static const int mk_arcade_gpioa_maps[] = {0,  1,    2,    3,     4,     5      
 // Map of the mcp23017 on GPIOB            a, b, tr, y, x, tl
 static const int mk_arcade_gpiob_maps[] = {0, 1, 2,  3, 4, 5 };
 
-// Map of the gpios :                           up, down, left, right, start, select, a,  b, unused, c, d, coin
-static const int mk_arcade_gpio_maps[] =       {26,  20,    21,  16,    19,    13,    12, 6, 11,     5, 7, 8 };
-// 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b, unused, c, d, coin
-static const int mk_arcade_gpio_maps_bplus[] = {23,  24,    10,  22,    17,    27,    4, 14, 11,     15, 18, 8 };
+// Map of the gpios :                           up, down, left, right, start, select, a,  b, unused, c,  d, coin
+static const int mk_arcade_gpio_maps[] =       {2,  3,    4,    14,    15,    18,    27, 22, 19,    23, 24, 17 };
+// 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b, unused, c,  d, coin
+static const int mk_arcade_gpio_maps_bplus[] = {13, 26,   19,   16,    5,     6,     12,  7, 19,     8, 11, 17 };
 
 static const short mk_arcade_gpio_btn[] = {
     BTN_START, BTN_SELECT, BTN_A, BTN_B, BTN_TR, BTN_Y, BTN_X, BTN_TL
@@ -426,14 +426,14 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps[i]);
             }
-            setGpioPullUps(0x43931E0);
+            setGpioPullUps(0x9C6C01C);
             printk("GPIO configured for pad%d\n", idx);
             break;
         case MK_ARCADE_GPIO_BPLUS:
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps_bplus[i]);
             }
-            setGpioPullUps(0xFFFFFF0);
+            setGpioPullUps(0x40939E0);
             printk("GPIO configured for pad%d\n", idx);
             break;
         case MK_ARCADE_MCP23017:
