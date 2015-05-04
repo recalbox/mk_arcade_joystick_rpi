@@ -351,7 +351,7 @@ static int mk_open(struct input_dev *dev) {
     if (err)
         return err;
 
-    if (!mk->used++ && mk->timer)
+    if (!mk->used++)
         mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 
     mutex_unlock(&mk->mutex);
@@ -484,6 +484,7 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
     }
 
     mutex_init(&mk->mutex);
+    setup_timer(&mk->timer, mk_timer, (long) mk);
 
     for (i = 0; i < n_pads && i < MK_MAX_DEVICES; i++) {
         if (!pads[i])
@@ -502,7 +503,6 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
         goto err_free_mk;
     }
 
-    setup_timer(&mk->timer, mk_timer, (long) mk);
 
     return mk;
 
