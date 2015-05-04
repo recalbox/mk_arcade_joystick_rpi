@@ -166,14 +166,18 @@ static struct mk *mk_base;
 static const int mk_max_arcade_buttons = 12;
 
 // Map of the gpios :                     up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
-static const int mk_arcade_gpio_maps[] = {4,  17,    27,  22,    10,    9,      25, 24, 23, 18, 15, 14 };
+//static const int mk_arcade_gpio_maps[] = {4,  17,    27,  22,    10,    9,      25, 24, 23, 18, 15, 14 };
 // 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
-static const int mk_arcade_gpio_maps_bplus[] = {11, 5,    6,    13,    19,    26,     21, 20, 16, 12, 7,  8 };
+//static const int mk_arcade_gpio_maps_bplus[] = {11, 5,    6,    13,    19,    26,     21, 20, 16, 12, 7,  8 };
 // Map of the mcp23017 on GPIOA            up, down, left, right, start, select
 static const int mk_arcade_gpioa_maps[] = {0,  1,    2,    3,     4,     5      };
-
 // Map of the mcp23017 on GPIOB            a, b, tr, y, x, tl
 static const int mk_arcade_gpiob_maps[] = {0, 1, 2,  3, 4, 5 };
+
+// Map of the gpios :                           up, down, left, right, start, select, a,  b, unused, c,  d, coin
+static const int mk_arcade_gpio_maps[] =       {2,  3,    4,    14,    15,    18,    27, 22, 19,    23, 24, 17 };
+// 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b, unused, c,  d, coin
+static const int mk_arcade_gpio_maps_bplus[] = {13, 26,   19,   16,    5,     6,     12,  7, 19,     8, 11, 17 };
 
 static const short mk_arcade_gpio_btn[] = {
     BTN_START, BTN_SELECT, BTN_A, BTN_B, BTN_TR, BTN_Y, BTN_X, BTN_TL
@@ -370,7 +374,6 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     int i, pad_type;
     int err;
     char FF = 0xFF;
-    pr_err("pad type : %d\n",pad_type_arg);
 
     if (pad_type_arg == MK_ARCADE_GPIO) {
         pad_type = MK_ARCADE_GPIO;
@@ -384,7 +387,6 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         pr_err("Pad type %d unknown\n", pad_type);
         return -EINVAL;
     }
-    pr_err("pad type : %d\n",pad_type);
     pad->dev = input_dev = input_allocate_device();
     if (!input_dev) {
         pr_err("Not enough memory for input device\n");
@@ -417,20 +419,33 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 
     mk->pad_count[pad_type]++;
 
+    int32_t pad1_mask = 0x0000000;
     switch (pad_type) {
         case MK_ARCADE_GPIO:
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps[i]);
             }
-            setGpioPullUps(0xBC6C610);
-            printk("GPIO configured for pad%d\n", idx);
+            //setGpioPullUps(0x9C6C01C);
+	    for (int pu=0; pu<12; pu++) {
+		int32_t pin_mask = 1<<mk_arcade_gpio_maps[pu];
+		pad1_mask = pad1_mask | pin_mask;
+	    }
+            printk("GPIO configured with mask %#.8X for pad%d\n", pad1_mask, idx);
+	    setGpioPullUps(pad1_mask);
             break;
         case MK_ARCADE_GPIO_BPLUS:
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps_bplus[i]);
             }
-            setGpioPullUps(0xFFFFFF0);
-            printk("GPIO configured for pad%d\n", idx);
+            //setGpioPullUps(0x40939E0 | 0x9C6C01C);
+	    int32_t pad2_mask = 0x0000000;
+	    for (int pu=0;pu<12;pu++) {
+		int32_t pin_mask = 1<<mk_arcade_gpio_maps_bplus[pu];
+		pad2_mask = pad2_mask | pin_mask;
+	    }
+	    int32_t combined_mask = pad1_mask | pad2_mask;
+	    setGpioPullUps(combined_mask);
+            printk("GPIO configured with p2 mask %#.8X and combined mask %#.8X for pad%d\n",pad2_mask,combined_mask, idx);
             break;
         case MK_ARCADE_MCP23017:
             i2c_init();
@@ -521,6 +536,7 @@ static void mk_remove(struct mk *mk) {
 }
 
 static int __init mk_init(void) {
+    printk("mk_arcade_joystick installing\n");
     /* Set up gpio pointer for direct register access */
     if ((gpio = ioremap(GPIO_BASE, 0xB0)) == NULL) {
         pr_err("io remap failed\n");
@@ -545,6 +561,8 @@ static int __init mk_init(void) {
 static void __exit mk_exit(void) {
     if (mk_base)
         mk_remove(mk_base);
+
+    printk("mk_arcade_joystick uninstalling\n");
 
     iounmap(gpio);
     iounmap(bsc1);
