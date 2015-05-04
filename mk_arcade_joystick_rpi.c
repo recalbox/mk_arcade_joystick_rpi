@@ -338,12 +338,14 @@ static void mk_process_packet(struct mk *mk) {
  */
 
 static void mk_timer(unsigned long private) {
+    printk("shout shout let it all out\n");
     struct mk *mk = (void *) private;
     mk_process_packet(mk);
     mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 }
 
 static int mk_open(struct input_dev *dev) {
+    printk("mk_open called\n");
     struct mk *mk = input_get_drvdata(dev);
     int err;
 
@@ -359,6 +361,7 @@ static int mk_open(struct input_dev *dev) {
 }
 
 static void mk_close(struct input_dev *dev) {
+    printk("mk_close called\n");
     struct mk *mk = input_get_drvdata(dev);
 
     mutex_lock(&mk->mutex);
@@ -374,7 +377,6 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     int i, pad_type;
     int err;
     char FF = 0xFF;
-    pr_err("pad type : %d\n",pad_type_arg);
 
     if (pad_type_arg == MK_ARCADE_GPIO) {
         pad_type = MK_ARCADE_GPIO;
@@ -388,7 +390,6 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         pr_err("Pad type %d unknown\n", pad_type);
         return -EINVAL;
     }
-    pr_err("pad type : %d\n",pad_type);
     pad->dev = input_dev = input_allocate_device();
     if (!input_dev) {
         pr_err("Not enough memory for input device\n");
@@ -503,7 +504,6 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
         goto err_free_mk;
     }
 
-
     return mk;
 
 err_unreg_devs:
@@ -526,6 +526,7 @@ static void mk_remove(struct mk *mk) {
 }
 
 static int __init mk_init(void) {
+    printk("mk_arcade_joystick installing\n");
     /* Set up gpio pointer for direct register access */
     if ((gpio = ioremap(GPIO_BASE, 0xB0)) == NULL) {
         pr_err("io remap failed\n");
@@ -550,6 +551,8 @@ static int __init mk_init(void) {
 static void __exit mk_exit(void) {
     if (mk_base)
         mk_remove(mk_base);
+
+    printk("mk_arcade_joystick uninstalling\n");
 
     iounmap(gpio);
     iounmap(bsc1);
