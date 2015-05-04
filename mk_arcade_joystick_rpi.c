@@ -239,10 +239,10 @@ static void i2c_write(char dev_addr, char reg_addr, char *buf, unsigned short le
 // Function to read a number of bytes into a  buffer from the FIFO of the I2C controller
 
 static void i2c_read(char dev_addr, char reg_addr, char *buf, unsigned short len) {
+    unsigned short bufidx;
 
     i2c_write(dev_addr, reg_addr, NULL, 0);
 
-    unsigned short bufidx;
     bufidx = 0;
 
     memset(buf, 0, len); // clear the buffer
@@ -374,6 +374,11 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     int i, pad_type;
     int err;
     char FF = 0xFF;
+    int32_t pad1_mask     = 0x0000000;
+    int32_t pad2_mask     = 0x0000000;
+    int32_t combined_mask = 0x0000000;
+    int32_t pin_mask      = 0x0000000;
+
 
     if (pad_type_arg == MK_ARCADE_GPIO) {
         pad_type = MK_ARCADE_GPIO;
@@ -419,16 +424,16 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 
     mk->pad_count[pad_type]++;
 
-    int32_t pad1_mask = 0x0000000;
     switch (pad_type) {
         case MK_ARCADE_GPIO:
             for (i = 0; i < mk_max_arcade_buttons; i++) {
                 setGpioAsInput(mk_arcade_gpio_maps[i]);
             }
             //setGpioPullUps(0x9C6C01C);
-	    for (int pu=0; pu<12; pu++) {
-		int32_t pin_mask = 1<<mk_arcade_gpio_maps[pu];
+	    for (i = 0; i < 12 ; i++) {
+		pin_mask = 1<<mk_arcade_gpio_maps[i];
 		pad1_mask = pad1_mask | pin_mask;
+		pin_mask = 0x0000000;
 	    }
             printk("GPIO configured with mask %#.8X for pad%d\n", pad1_mask, idx);
 	    setGpioPullUps(pad1_mask);
@@ -438,12 +443,17 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
                 setGpioAsInput(mk_arcade_gpio_maps_bplus[i]);
             }
             //setGpioPullUps(0x40939E0 | 0x9C6C01C);
-	    int32_t pad2_mask = 0x0000000;
-	    for (int pu=0;pu<12;pu++) {
-		int32_t pin_mask = 1<<mk_arcade_gpio_maps_bplus[pu];
-		pad2_mask = pad2_mask | pin_mask;
+	    for (i = 0; i < 12 ; i++) {
+		pin_mask = 1<<mk_arcade_gpio_maps[i];
+		pad1_mask = pad1_mask | pin_mask;
+		pin_mask = 0x0000000;
 	    }
-	    int32_t combined_mask = pad1_mask | pad2_mask;
+	    for (i = 0; i < 12; i++) {
+		pin_mask = 1<<mk_arcade_gpio_maps_bplus[i];
+		pad2_mask = pad2_mask | pin_mask;
+		pin_mask = 0x0000000;
+	    }
+	    combined_mask = pad1_mask | pad2_mask;
 	    setGpioPullUps(combined_mask);
             printk("GPIO configured with p2 mask %#.8X and combined mask %#.8X for pad%d\n",pad2_mask,combined_mask, idx);
             break;
