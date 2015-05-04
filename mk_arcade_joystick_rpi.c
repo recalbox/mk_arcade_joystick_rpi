@@ -338,14 +338,12 @@ static void mk_process_packet(struct mk *mk) {
  */
 
 static void mk_timer(unsigned long private) {
-    printk("shout shout let it all out\n");
     struct mk *mk = (void *) private;
     mk_process_packet(mk);
     mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 }
 
 static int mk_open(struct input_dev *dev) {
-    printk("mk_open called\n");
     struct mk *mk = input_get_drvdata(dev);
     int err;
 
@@ -361,7 +359,6 @@ static int mk_open(struct input_dev *dev) {
 }
 
 static void mk_close(struct input_dev *dev) {
-    printk("mk_close called\n");
     struct mk *mk = input_get_drvdata(dev);
 
     mutex_lock(&mk->mutex);
