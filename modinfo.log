@@ -1,8 +1,0 @@
-filename:       /lib/modules/3.18.11-v7+/updates/dkms/mk_arcade_joystick_rpi.ko
-license:        GPL
-description:    GPIO and MCP23017 Arcade Joystick Driver
-author:         Matthieu Proucelle
-srcversion:     AE04817EFD61267CE227B3F
-depends:        
-vermagic:       3.18.11+-v7 SMP preempt mod_unload modversions ARMv7 
-parm:           map:Enable or disable GPIO and MCP23017 Arcade Joystick (array of int)
