@@ -351,7 +351,7 @@ static int mk_open(struct input_dev *dev) {
     if (err)
         return err;
 
-    if (!mk->used++)
+    if (!mk->used++ && mk->timer)
         mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 
     mutex_unlock(&mk->mutex);
