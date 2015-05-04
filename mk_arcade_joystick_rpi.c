@@ -175,7 +175,7 @@ static const int mk_arcade_gpioa_maps[] = {0,  1,    2,    3,     4,     5      
 static const int mk_arcade_gpiob_maps[] = {0, 1, 2,  3, 4, 5 };
 
 // Map of the gpios :                           up, down, left, right, start, select, a,  b, unused, c,  d, coin
-static const int mk_arcade_gpio_maps[] =       {2,  3,    4,    14,    15,    18,    27, 22, 19,    23, 24, 17 };
+static const int mk_arcade_gpio_maps[] =       {2,  3,    14,    4,    15,    18,    27, 22, 19,    23, 24, 17 };
 // 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b, unused, c,  d, coin
 static const int mk_arcade_gpio_maps_bplus[] = {13, 26,   19,   16,    5,     6,     12,  7, 19,     8, 11, 17 };
 
