@@ -2,7 +2,7 @@
 
 The Raspberry Pi GPIO Joystick Driver
 
-The mk_arcade_joystick_rpi is fully integrated in the recalbox distribution : see http://www.recalbox.com
+The mk_arcade_joystick_rpi is fully integrated in the **recalbox** distribution : see http://www.recalbox.com
 
 ## Introduction ##
 
