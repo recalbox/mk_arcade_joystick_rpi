@@ -105,9 +105,9 @@ struct mk_nin_gpio {
 struct mk {
     struct mk_pad pads[MK_MAX_DEVICES];
     struct timer_list timer;
-    int pad_count[MK_MAX];
     int used;
     struct mutex mutex;
+    int total_pads;
 };
 
 struct mk_subdev {
@@ -180,7 +180,7 @@ static void mk_process_packet(struct mk *mk) {
     struct mk_pad *pad;
     int i;
 
-    for (i = 0; i < MK_MAX_DEVICES; i++) {
+    for (i = 0; i < mk->total_pads; i++) {
         pad = &mk->pads[i];
         mk_gpio_read_packet(pad, data);
         mk_input_report(pad, data);
@@ -265,7 +265,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     for (i = 0; i < mk_max_arcade_buttons - 4; i++)
         __set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
 
-    mk->pad_count[pad_type]++;
+    mk->total_pads++;
 
     switch (pad_type) {
         case MK_ARCADE_GPIO:
