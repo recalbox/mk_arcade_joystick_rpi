@@ -41,14 +41,14 @@ It uses internal pull-ups of RPi, so all switches must be directly connected to 
 
 
 ### Pinout ###
-Let's consider a 6 buttons cab panel with this button order : 
+Let's consider a 7 buttons cab panel with this button order : 
 
      ↑   Ⓨ Ⓧ Ⓛ  
     ← →	 Ⓑ Ⓐ Ⓡ Ⓗ
      ↓  
 
-With Right trigger = TR and Left trigger = TL  
-H is the Hotkey.
+With Ⓡ = Right trigger = TR and Ⓛ  = Left rtigger = TL  
+Ⓗ is the Hotkey.
 
 Here is the rev B GPIO pinout summary :
 
