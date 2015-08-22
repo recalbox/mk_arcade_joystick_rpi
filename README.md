@@ -4,6 +4,8 @@ The Raspberry Pi GPIO Joystick Driver
 
 The mk_arcade_joystick_rpi is fully integrated in the **recalbox** distribution : see http://www.recalbox.com
 
+**The branch [hotkeybtn](https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/tree/hotkeybtn) now support one more button per player in place of MCP23017 support**
+
 ## Introduction ##
 
 The RaspberryPi is an amazing tool I discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
