@@ -4,8 +4,7 @@ The Raspberry Pi GPIO Joystick Driver
 
 The mk_arcade_joystick_rpi is fully integrated in the **recalbox** distribution : see http://www.recalbox.com
 
-This version bring the support of an 9th button for each player but lack of the MCP23017 support. See the [master branch](https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/tree/master)
-
+**The branch [hotkeybtn](https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/tree/hotkeybtn) now support one more button per player in place of MCP23017 support**
 
 ## Introduction ##
 
