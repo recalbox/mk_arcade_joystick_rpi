@@ -162,7 +162,7 @@ Then create the file `/etc/modprobe.d/mk_arcade_joystick.conf` :
 sudo nano /etc/modprobe.d/mk_arcade_joystick.conf
 ```
 
-and add the option configuration : 
+and add the module configuration : 
 ```shell
 options mk_arcade_joystick_rpi map=1,2
 ```
