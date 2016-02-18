@@ -145,16 +145,26 @@ The GPIO joystick 1 events will be reported to the file "/dev/input/js0" and the
 
 ### Auto load at startup ###
 
-Open /etc/modules :
+Open `/etc/modules` :
 
 ```shell
 sudo nano /etc/modules
 ```
 
-And add the line you use to load the driver : 
+and add the line you use to load the driver : 
 
 ```shell
-mk_arcade_joystick_rpi map=1,2
+mk_arcade_joystick_rpi
+```
+
+Then create the file `/etc/modprobe.d/mk_arcade_joystick.conf` :
+```shell
+sudo nano /etc/modprobe.d/mk_arcade_joystick.conf
+```
+
+and add the option configuration : 
+```shell
+options mk_arcade_joystick_rpi map=1,2
 ```
 
 ### Testing ###
