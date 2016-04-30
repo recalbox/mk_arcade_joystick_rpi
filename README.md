@@ -14,6 +14,8 @@ So i started to wire my joysticks and buttons to my raspberry pi, and I wrote th
 
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
+UPDATE 0.1.5 : Added GPIO customization
+
 UPDATE 0.1.4 : Compatibily with rpi2 
 
 UPDATE 0.1.3 : Compatibily with 3.18.3 :
@@ -127,7 +129,7 @@ sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
 ```shell
 git clone https://github.com/pinuct/mk_arcade_joystick_rpi/tree/customgpio
 ```
-3.b.2 - Create a folder under  "/usr/src/<module>-<module-version>/"
+3.b.2 - Create a folder under  "/usr/src/*module*-*module-version*/"
 ```shell
 mkdir /usr/src/mk_arcade_joystick_rpi-0.1.5/
 ```
