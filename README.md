@@ -116,10 +116,30 @@ sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 ```
 
-3 - Install driver from release (prefered):  
+3.a - Install driver from release (prefered):  
 ```shell
 wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
 sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
+```
+3.b - Or compile and install with dkms:  
+
+3.b.1 - Download the files:
+```shell
+git clone https://github.com/pinuct/mk_arcade_joystick_rpi/tree/customgpio
+```
+3.b.2 - Create a folder under  "/usr/src/<module>-<module-version>/"
+```shell
+mkdir /usr/src/mk_arcade_joystick_rpi-0.1.5/
+```
+3.b.3 - Copy the files into the folder:
+```shell
+cd mk_arcade_joystick_rpi/
+cp -a * /usr/src/mk_arcade_joystick_rpi-0.1.5/
+```
+3.b.4 - Compile and install the module:
+```shell
+dkms build -m mk_arcade_joystick_rpi -v 0.1.5
+dkms install -m mk_arcade_joystick_rpi -v 0.1.5
 ```
 
 ### Loading the driver ###
@@ -140,6 +160,17 @@ If you have two joysticks connected on your RPi B+ version you will have to run 
 ```shell
 sudo modprobe mk_arcade_joystick_rpi map=1,2
 ```
+If you have a TFT screen connected on your RPi B+ you can't use all the gpios. You can run the following command for using only the gpios not used by the tft screen (Be careful, not all tft screen use the same pins. GPIOs used with this map: 21,13,26,   19,5,6,22,4,20,17,27,16):
+
+```shell
+sudo modprobe mk_arcade_joystick_rpi map=4
+```
+
+If you don't want to use all pins or wants a **custom gpio** map use:
+```shell
+sudo modprobe mk_arcade_joystick_rpi map=5 gpio=pin1,pin2,pin3,.....,pin12
+```
+Where *pinx* is the number of the gpio you want. There are 12 posible gpio with **button order: Y-,Y+,X-,X+,start,select,a,b,tr,y,x,tl.** Use -1 for unused pins. For example `gpio=21,13,26,19,-1,-1,22,24,-1,-1,-1,-1` uses gpios 21,13,26,19 for axis and gpios 22 and 24 for A and B buttons, the rest of buttons are unused.
 
 The GPIO joystick 1 events will be reported to the file "/dev/input/js0" and the GPIO joystick 2  events will be reported to "/dev/input/js1"
 
