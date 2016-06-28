@@ -19,6 +19,8 @@ So i started to wire my joysticks and buttons to my raspberry pi, and I wrote th
 
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
+UPDATE 0.1.6 : Added RetroPie 3.8.x support
+
 UPDATE 0.1.5 : Added GPIO customization
 
 UPDATE 0.1.4 : Compatibily with rpi2 
