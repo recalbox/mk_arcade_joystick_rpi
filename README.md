@@ -164,7 +164,8 @@ If you don't want to use all pins or wants a **custom gpio** map use:
 ```shell
 sudo modprobe mk_arcade_joystick_rpi map=5 gpio=pin1,pin2,pin3,.....,pin12
 ```
-Where *pinx* is the number of the gpio you want. There are 12 posible gpio with **button order: Y-,Y+,X-,X+,start,select,a,b,tr,y,x,tl.** Use -1 for unused pins. For example `gpio=21,13,26,19,-1,-1,22,24,-1,-1,-1,-1` uses gpios 21,13,26,19 for axis and gpios 22 and 24 for A and B buttons, the rest of buttons are unused.
+Where *pinx* is the number of the gpio you want. There are 12 posible gpio with **button order: Y-,Y+,X-,X+,start,select,a,b,tr,y,x,tl.** Use -1 for unused pins. For example `gpio=14,15,23,24,5,6,13,19,26,16,20,21
+` uses gpios 21,13,26,19 for axis and gpios 22 and 24 for A and B buttons, the rest of buttons are unused.
 
 The GPIO joystick 1 events will be reported to the file "/dev/input/js0" and the GPIO joystick 2  events will be reported to "/dev/input/js1"
 
