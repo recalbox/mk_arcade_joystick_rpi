@@ -115,9 +115,7 @@ sudo apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
 
 2 - Install last kernel headers :
 ```shell
-wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
+sudo apt-get install raspberrypi-kernel-headers
 ```
 
 3.a - Install driver from release (prefered):  
@@ -129,21 +127,40 @@ sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
 
 3.b.1 - Download the files:
 ```shell
-git clone https://github.com/pinuct/mk_arcade_joystick_rpi/tree/customgpio
+git clone https://github.com/rasplay/mk_arcade_joystick_rpi/
 ```
 3.b.2 - Create a folder under  "/usr/src/*module*-*module-version*/"
 ```shell
-mkdir /usr/src/mk_arcade_joystick_rpi-0.1.5/
+sudo mkdir /usr/src/mk_arcade_joystick_rpi-0.1.5/
 ```
 3.b.3 - Copy the files into the folder:
 ```shell
 cd mk_arcade_joystick_rpi/
-cp -a * /usr/src/mk_arcade_joystick_rpi-0.1.5/
+
+make 
+
+sudo dkms remove -m mk_arcade_joystick_rpi -v 0.1.4 --all
+
+sudo cp -a * /usr/src/mk_arcade_joystick_rpi-0.1.5/
+
+cd /usr/src/mk_arcade_joystick_rpi-0.1.5/
+```
+
+```shell
+
+sudo nano dkms.conf
+
+PACKAGE_VERSION="$MKVERSION"
+
+to change 
+
+PACKAGE_VERSION="0.1.5"
+
 ```
 3.b.4 - Compile and install the module:
 ```shell
-dkms build -m mk_arcade_joystick_rpi -v 0.1.5
-dkms install -m mk_arcade_joystick_rpi -v 0.1.5
+sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.5
+sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.5
 ```
 
 ### Loading the driver ###
@@ -204,11 +221,12 @@ options mk_arcade_joystick_rpi map=1,2
 
 ### Testing ###
 
+!(https://i.imgur.com/m5kVu3Q.png)
+
 Use the following command to test joysticks inputs :
 ```shell
 jstest /dev/input/js0
 ```
-
 
 ## More Joysticks case : MCP23017 ##
 
@@ -288,7 +306,6 @@ I tested up to 3 joystick, one on GPIOs, one on a MCP23017 on address 0x20, one 
 ```shell
 sudo modprobe mk_arcade_joystick_rpi map=1,0x20,0x24
 ```
-
 
 ## Known Bugs ##
 If you try to read or write on i2c with a tool like i2cget or i2cset when the driver is loaded, you are gonna have a bad time... 
