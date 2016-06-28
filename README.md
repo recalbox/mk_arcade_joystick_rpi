@@ -113,7 +113,7 @@ git clone https://github.com/rasplay/mk_arcade_joystick_rpi/
 ```
 3.b.2 - Create a folder under  "/usr/src/*module*-*module-version*/"
 ```shell
-sudo mkdir /usr/src/mk_arcade_joystick_rpi-0.1.5/
+sudo mkdir /usr/src/mk_arcade_joystick_rpi-0.1.6/
 ```
 3.b.3 - Copy the files into the folder:
 ```shell
@@ -123,26 +123,15 @@ make
 
 sudo dkms remove -m mk_arcade_joystick_rpi -v 0.1.4 --all
 
-sudo cp -a * /usr/src/mk_arcade_joystick_rpi-0.1.5/
+sudo cp -a * /usr/src/mk_arcade_joystick_rpi-0.1.6/
 
-cd /usr/src/mk_arcade_joystick_rpi-0.1.5/
+cd /usr/src/mk_arcade_joystick_rpi-0.1.6/
 ```
 
-```shell
-
-sudo nano dkms.conf
-
-PACKAGE_VERSION="$MKVERSION"
-
-to change 
-
-PACKAGE_VERSION="0.1.5"
-
-```
 3.b.4 - Compile and install the module:
 ```shell
-sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.5
-sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.5
+sudo dkms build -m mk_arcade_joystick_rpi -v 0.1.6
+sudo dkms install -m mk_arcade_joystick_rpi -v 0.1.6
 ```
 
 ### Loading the driver ###
