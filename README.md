@@ -221,8 +221,6 @@ options mk_arcade_joystick_rpi map=1,2
 
 ### Testing ###
 
-!(https://i.imgur.com/m5kVu3Q.png)
-
 Use the following command to test joysticks inputs :
 ```shell
 jstest /dev/input/js0
@@ -274,8 +272,6 @@ You must set the pins A0 A1 and A2 to 0 or 1 in order to set the i2c address of 
 Just connect one of the pins to 3.3v to set its state to 1 and change the i2c address of the MCP23017.
 
 You must also connect the RESET pin to 3.3v.
-
-
 
 
 ### Configuration ###
