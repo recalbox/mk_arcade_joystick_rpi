@@ -77,32 +77,11 @@ If you have a Rev B+ RPi or RPi2:
 
 Of course the ground can be common for all switches.
 
-### Installation ###
+### Auto Script Installation ###
 
-### Installation Script ###
+> https://github.com/pinuct/mk_arcade_joystick_rpi/ github not install over Retropie 3.8.x 
 
-Download the installation script : 
-```shell
-mkdir mkjoystick
-cd mkjoystick
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
-```
-
-Update your system :
-```shell
-sudo sh ./install.sh updatesystem
-sudo reboot
-```
-
-Don't forget to reboot (or the next part won't work) and re-run the script without any arguments :
-```shell
-sudo sh ./install.sh
-```
-
-Now jump to [Loading the driver](#loading-the-driver)
-
-
-### Manual Installation ###
+### How to Installation over Retropie 3.8.x ###
 Update system :
 ```shell
 sudo apt-get update
