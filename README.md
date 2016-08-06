@@ -105,9 +105,7 @@ sudo apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
 
 2 - Install last kernel headers :
 ```shell
-wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
+sudo apt-get install raspberrypi-kernel-headers
 ```
 
 3.a - Install driver from release (prefered):  
@@ -119,7 +117,7 @@ sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
 
 3.b.1 - Download the files:
 ```shell
-git clone https://github.com/pinuct/mk_arcade_joystick_rpi/tree/customgpio
+git clone https://github.com/pinuct/mk_arcade_joystick_rpi/tree/customgpiohotkey
 ```
 3.b.2 - Create a folder under  "/usr/src/*module*-*module-version*/"
 ```shell
