@@ -4,7 +4,7 @@ The Raspberry Pi GPIO Joystick Driver
 
 The mk_arcade_joystick_rpi is fully integrated in the **recalbox** distribution : see http://www.recalbox.com
 
-**The branch [hotkeybtn](https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/tree/hotkeybtn) now support one more button per player in place of MCP23017 support**
+**The branch [hotkeybtn](https://github.com/recalbox/mk_arcade_joystick_rpi/tree/hotkeybtn) now support one more button per player in place of MCP23017 support**
 
 ## Introduction ##
 
@@ -63,12 +63,12 @@ With R = TR and L = TL
 
 Here is the rev B GPIO pinout summary :
 
-![GPIO Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
+![GPIO Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
 
 If you have a Rev B+ RPi or RPi2:
 
 
-![GPIO Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
+![GPIO Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
 
 Of course the ground can be common for all switches.
 
@@ -80,7 +80,7 @@ Download the installation script :
 ```shell
 mkdir mkjoystick
 cd mkjoystick
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
+wget https://github.com/recalbox/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
 ```
 
 Update your system :
@@ -113,14 +113,12 @@ sudo apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
 
 2 - Install last kernel headers :
 ```shell
-wget http://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-sudo dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-sudo rm linux-headers-`uname -r`_`uname -r`-2_armhf.deb
+sudo apt-get install -y --force-yes raspberrypi-kernel-headers
 ```
 
 3.a - Install driver from release (prefered):  
 ```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
+wget https://github.com/recalbox/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
 sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
 ```
 3.b - Or compile and install with dkms:  
@@ -214,7 +212,7 @@ jstest /dev/input/js0
 Here is the MCP23017 pinout summary :
 
 
-![MCP23017 Interface](https://github.com/DigitalLumberjack/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
+![MCP23017 Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
 
 
 ### Preparation of the RPi for MCP23017###
