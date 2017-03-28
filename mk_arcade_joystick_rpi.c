@@ -395,7 +395,11 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     char FF = 0xFF;
     pr_err("pad type : %d\n",pad_type_arg);
 
-    pad_type = pad_type_arg;
+    if (pad_type_arg >= MK_MAX) {
+        pad_type = MK_ARCADE_MCP23017;
+    } else {
+        pad_type = pad_type_arg;
+    }
 
     if (pad_type < 1 || pad_type >= MK_MAX) {
         pr_err("Pad type %d unknown\n", pad_type);
