@@ -72,7 +72,7 @@ Download the installation script :
 ```shell
 mkdir mkjoystick
 cd mkjoystick
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
+wget https://github.com/recalbox/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
 ```
 
 Update your system :
@@ -110,7 +110,7 @@ sudo apt-get install raspberrypi-kernel-headers
 
 3.a - Install driver from release (prefered):  
 ```shell
-wget https://github.com/digitalLumberjack/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
+wget https://github.com/recalbox/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
 sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
 ```
 3.b - Or compile and install with dkms:  
@@ -207,6 +207,93 @@ Use the following command to test joysticks inputs :
 ```shell
 jstest /dev/input/js0
 ```
+
+## More Joysticks case : MCP23017 ##
+
+
+Here is the MCP23017 pinout summary :
+
+
+![MCP23017 Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
+
+
+### Preparation of the RPi for MCP23017###
+
+Follow the standards installation instructions.
+
+Activate i2c on your RPi :
+```shell
+sudo nano /etc/modules
+```
+Add the following lines in order to load i2c modules automatically :
+```shell
+i2c-bcm2708 
+i2c-dev
+```
+
+And if the file /etc/modprobe.d/raspi-blacklist.conf exists : 
+```shell
+sudo nano /etc/modprobe.d/raspi-blacklist.conf
+```
+
+Check if you have a line with :
+```shell
+i2c-bcm2708 
+```
+and add a # at the beginning of the line to remove the blacklisting
+
+Reboot or load the two module :
+```shell
+modprobe i2c-bcm2708 i2c-dev
+```
+
+### Preparation of the MCP23017 chip ###
+
+
+You must set the pins A0 A1 and A2 to 0 or 1 in order to set the i2c address of the chip. If you only have 1 chip, connect the 3 pins to the ground.
+Just connect one of the pins to 3.3v to set its state to 1 and change the i2c address of the MCP23017.
+
+You must also connect the RESET pin to 3.3v.
+
+
+
+
+### Configuration ###
+When you want to load the driver you must pass a list of parameters that represent the list of connected Joysticks. The first parameter will be the joystick mapped to /dev/input/js0, the second to js1 etc..
+
+If you have connected a joystick on RPi GPIOs you must pass "1" as a parameter.
+
+If you have connected one or more joysticks with MCP23017, you must pass the address of I2C peripherals connected, which you can get with the command :
+
+```shell
+sudo i2cdetect -y 1
+```
+
+The configuration of each MCP23017 is done by setting pads A0 A1 and A2 to 0 or 1.
+
+If you configured your MCP23017 with A0 A1 and A2 connected to the ground, the address returned by i2cdetect should be 0x20
+
+So if you have a joystick connected to RPi GPIOs and a joystick on a MCP23017 with the address 0x20, in order to load the driver, you must run the command :
+
+```shell
+sudo modprobe mk_arcade_joystick_rpi map=1,0x20
+```
+
+The GPIO joystick events will be reported to the file "/dev/input/js0" and the mcp23017 joystick events will be reported to "/dev/input/js1"
+
+I tested up to 3 joystick, one on GPIOs, one on a MCP23017 on address 0x20, one on a MCP23017 on address 0x24 :
+
+```shell
+sudo modprobe mk_arcade_joystick_rpi map=1,0x20,0x24
+```
+
+
+## Known Bugs ##
+If you try to read or write on i2c with a tool like i2cget or i2cset when the driver is loaded, you are gonna have a bad time... 
+
+If you try i2cdetect when the driver is running, it will show you strange peripheral addresses...
+
+256MB Raspberry Pi Model B is not supported by the current driver. If you want to make the driver work on your old RPi, you will have to change the address of BSC1_BASE to (BCM2708_PERI_BASE + 0x205000) in order to use the correct i2c address, and recompile.
 
 Credits
 -------------
