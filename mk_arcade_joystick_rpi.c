@@ -176,23 +176,25 @@ struct mk_subdev {
 
 static struct mk *mk_base;
 
+static const int mk_data_size = 16;
+
 static const int mk_max_arcade_buttons = 12;
 
 // Map of the gpios :                     up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
-static const int mk_arcade_gpio_maps[] = {4,  17,    27,  22,    10,    9,      25, 24, 23, 18, 15, 14 };
+static const int mk_arcade_gpio_maps[] = { 4,  17,    27,  22,    10,    9,      25, 24, 23, 18, 15, 14 };
 // 2nd joystick on the b+ GPIOS                 up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
-static const int mk_arcade_gpio_maps_bplus[] = {11, 5,    6,    13,    19,    26,     21, 20, 16, 12, 7,  8 };
-// Map of the mcp23017 on GPIOA            up, down, left, right, start, select
-static const int mk_arcade_gpioa_maps[] = {0,  1,    2,    3,     4,     5      };
+static const int mk_arcade_gpio_maps_bplus[] = { 11, 5,    6,    13,    19,    26,     21, 20, 16, 12, 7,  8 };
+// Map of the mcp23017 on GPIOA            up, down, left, right, start, select, a,	 b
+static const int mk_arcade_gpioa_maps[] = { 0,  1,    2,    3,     4,     5,	6,	 7 };
 
-// Map of the mcp23017 on GPIOB            a, b, tr, y, x, tl
-static const int mk_arcade_gpiob_maps[] = {0, 1, 2,  3, 4, 5 };
+// Map of the mcp23017 on GPIOB            tr, y, x, tl, c, tr2, z, tl2
+static const int mk_arcade_gpiob_maps[] = { 0, 1, 2,  3, 4, 5,   6, 7 };
 
 // Map joystick on the b+ GPIOS with TFT      up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
-static const int mk_arcade_gpio_maps_tft[] = {21, 13,    26,    19,    5,    6,     22, 4, 20, 17, 27,  16 };
+static const int mk_arcade_gpio_maps_tft[] = { 21, 13,    26,    19,    5,    6,     22, 4, 20, 17, 27,  16 };
 
 static const short mk_arcade_gpio_btn[] = {
-    BTN_START, BTN_SELECT, BTN_A, BTN_B, BTN_TR, BTN_Y, BTN_X, BTN_TL
+	BTN_START, BTN_SELECT, BTN_A, BTN_B, BTN_TR, BTN_Y, BTN_X, BTN_TL, BTN_C, BTN_TR2, BTN_Z, BTN_TL2
 };
 
 static const char *mk_names[] = {
@@ -299,12 +301,12 @@ static void mk_mcp23017_read_packet(struct mk_pad * pad, unsigned char *data) {
         data[i] = !((resultA >> mk_arcade_gpioa_maps[i]) & 0x1);
     }
     // read buttons on gpioa
-    for (i = 4; i < 6; i++) {
+    for (i = 4; i < 8; i++) {
         data[i] = !((resultA >> mk_arcade_gpioa_maps[i]) & 0x1);
     }
     // read buttons on gpiob
-    for (i = 6; i < 12; i++) {
-        data[i] = !((resultB >> (mk_arcade_gpiob_maps[i-6])) & 0x1);
+    for (i = 8; i < 16; i++) {
+        data[i] = !((resultB >> (mk_arcade_gpiob_maps[i-8])) & 0x1);
     }
 }
 
@@ -326,15 +328,22 @@ static void mk_input_report(struct mk_pad * pad, unsigned char * data) {
     int j;
     input_report_abs(dev, ABS_Y, !data[0]-!data[1]);
     input_report_abs(dev, ABS_X, !data[2]-!data[3]);
-    for (j = 4; j < mk_max_arcade_buttons; j++) {
-        input_report_key(dev, mk_arcade_gpio_btn[j - 4], data[j]);
-    }
+	if (pad->type == MK_ARCADE_MCP23017) {	// check if MCP23017 and extend with 4.
+		for (j = 4; j < (mk_max_arcade_buttons + 4); j++) {
+			input_report_key(dev, mk_arcade_gpio_btn[j - 4], data[j]);
+		}
+	}
+	else {
+		for (j = 4; j < mk_max_arcade_buttons; j++) {
+			input_report_key(dev, mk_arcade_gpio_btn[j - 4], data[j]);
+		}
+	}
     input_sync(dev);
 }
 
 static void mk_process_packet(struct mk *mk) {
 
-    unsigned char data[mk_max_arcade_buttons];
+    unsigned char data[mk_data_size];
     struct mk_pad *pad;
     int i;
 
@@ -447,8 +456,15 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 
     for (i = 0; i < 2; i++)
         input_set_abs_params(input_dev, ABS_X + i, -1, 1, 0, 0);
-    for (i = 0; i < mk_max_arcade_buttons - 4; i++)
-        __set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
+	if (pad_type != MK_ARCADE_MCP23017)
+	{
+		for (i = 0; i < mk_max_arcade_buttons; i++)
+			__set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
+	}
+	else { //Checking for MCP23017 so it gets 4 more buttons registered to it.
+		for (i = 0; i < mk_max_arcade_buttons + 4; i++)
+			__set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
+	}
 
     mk->pad_count[pad_type]++;
 
