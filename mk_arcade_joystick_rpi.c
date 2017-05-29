@@ -119,7 +119,7 @@ struct mk_config {
 static struct mk_config mk_cfg __initdata;
 
 module_param_array_named(map, mk_cfg.args, int, &(mk_cfg.nargs), 0);
-MODULE_PARM_DESC(map, "Enable or disable GPIO, TFT and Custom Arcade Joystick");
+MODULE_PARM_DESC(map, "Enable or disable GPIO, MCP and Custom Arcade Joystick");
 
 struct gpio_config {
     int mk_arcade_gpio_maps_custom[MK_MAX_BUTTONS];
@@ -143,7 +143,7 @@ enum mk_type {
     MK_ARCADE_GPIO,
     MK_ARCADE_GPIO_BPLUS,
     MK_ARCADE_MCP23017,
-    MK_ARCADE_GPIO_TFT,
+//    MK_ARCADE_GPIO_TFT,
     MK_ARCADE_GPIO_CUSTOM,
     MK_ARCADE_GPIO_CUSTOM2,
     MK_MAX
