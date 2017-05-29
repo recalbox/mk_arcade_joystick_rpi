@@ -42,7 +42,7 @@ MODULE_AUTHOR("Matthieu Proucelle");
 MODULE_DESCRIPTION("GPIO and MCP23017 Arcade Joystick Driver");
 MODULE_LICENSE("GPL");
 
-#define MK_MAX_DEVICES		2
+#define MK_MAX_DEVICES		4
 #define MK_MAX_BUTTONS      13
 
 #ifdef RPI2
@@ -138,7 +138,8 @@ static struct gpio_config gpio_cfg2 __initdata;
 module_param_array_named(gpio2, gpio_cfg2.mk_arcade_gpio_maps_custom, int, &(gpio_cfg2.nargs), 0);
 MODULE_PARM_DESC(gpio2, "Numbers of custom GPIO for Arcade Joystick 2");
 
-enum mk_type {
+// Enumerate the map parameter map=1 -> P1 on GPIO with HK, map=1,2 P1 and P2 on GPIO with HK
+enum mk_type { 
     MK_NONE = 0,
     MK_ARCADE_GPIO,
     MK_ARCADE_GPIO_BPLUS,
@@ -413,8 +414,9 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     int err;
     char FF = 0xFF;
     pr_err("pad type : %d\n",pad_type_arg);
-
-    if (pad_type_arg >= MK_MAX) {
+    
+	//testing if module paramaters contains ic2 address
+    if (pad_type_arg >= MK_MAX) { //map = 0x20 for example => I2C address for MCP 
         pad_type = MK_ARCADE_MCP23017;
     } else {
         pad_type = pad_type_arg;
@@ -508,7 +510,6 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 
     // initialize gpio
     if(pad_type != MK_ARCADE_MCP23017){
-    
 		for (i = 0; i < MK_MAX_BUTTONS; i++) {
 			printk("GPIO = %d\n", pad->gpio_maps[i]);
 			if(pad->gpio_maps[i] != -1){    // to avoid unused buttons
