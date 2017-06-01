@@ -42,8 +42,9 @@ MODULE_AUTHOR("Matthieu Proucelle");
 MODULE_DESCRIPTION("GPIO and MCP23017 Arcade Joystick Driver");
 MODULE_LICENSE("GPL");
 
-#define MK_MAX_DEVICES		4
+#define MK_MAX_DEVICES		9
 #define MK_MAX_BUTTONS      13
+//#define MK_MAX_BUTTONS      17
 
 #ifdef RPI2
 #define PERI_BASE        0x3F000000
@@ -157,7 +158,7 @@ struct mk_pad {
     enum mk_type type;
     char phys[32];
     int mcp23017addr;
-    int gpio_maps[MK_MAX_BUTTONS]
+    int gpio_maps[MK_MAX_BUTTONS+4] //for mcp extension
 };
 
 struct mk_nin_gpio {
@@ -358,7 +359,7 @@ static void mk_input_report(struct mk_pad * pad, unsigned char * data) {
 
 static void mk_process_packet(struct mk *mk) {
 
-    unsigned char data[MK_MAX_BUTTONS];
+    unsigned char data[MK_MAX_BUTTONS+4]; //for MCP which have 4 buttons more
     struct mk_pad *pad;
     int i;
 
@@ -427,7 +428,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
     
 	//testing if module paramaters contains ic2 address
     if (pad_type_arg >= MK_MAX) { //map = 0x20 for example => I2C address for MCP 
-        pad_type = MK_ARCADE_MCP23017;
+        pad_type = MK_ARCADE_MCP23017; //pad_type = 3 when MCP detected
     } else {
         pad_type = pad_type_arg;
     }
@@ -495,11 +496,11 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 //        __set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
 	if (pad_type != MK_ARCADE_MCP23017)
  	{
- 		for (i = 0; i < MK_MAX_BUTTONS; i++)
+ 		for (i = 0; i < MK_MAX_BUTTONS - 4; i++)
  			__set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
  	}
  	else { //Checking for MCP23017 so it gets 4 more buttons registered to it.
- 		for (i = 0; i < MK_MAX_BUTTONS + 4; i++)
+ 		for (i = 0; i < MK_MAX_BUTTONS; i++)
  			__set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
  	}
 
@@ -588,6 +589,7 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
     setup_timer(&mk->timer, mk_timer, (long) mk);
 
     for (i = 0; i < n_pads && i < MK_MAX_DEVICES; i++) {
+		printk("PADS Probe = %d\n", pads[i]);
         if (!pads[i])
             continue;
 
@@ -620,8 +622,10 @@ static void mk_remove(struct mk *mk) {
     int i;
 
     for (i = 0; i < MK_MAX_DEVICES; i++)
-        if (mk->pads[i].dev)
+        if (mk->pads[i].dev){
+			printk("PADS Remove = %d\n", i);
             input_unregister_device(mk->pads[i].dev);
+		}
     kfree(mk);
 }
 
