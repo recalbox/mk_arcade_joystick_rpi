@@ -41,7 +41,7 @@ In theory you can connect up to 8 chips so 8 joystick.
 ## The Software ##
 The joystick driver is based on the gamecon_gpio_rpi driver by [marqs](https://github.com/marqs85)
 
-It is written for 4 directions joysticks and 8 buttons per player.
+It is written for 4 directions joysticks and 8 buttons per player. Using a MCP23017 extends input numbers to 16 : 4 directions and 12 buttons.
 
 It can read one joystick + buttons wired on RPi GPIOs (two on RPi B+ revision) and up to 5 other joysticks + buttons from MCP23017 chips. One MCP23017 is required for each joystick.
 
