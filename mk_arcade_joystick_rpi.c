@@ -179,6 +179,7 @@ static struct mk *mk_base;
 static const int mk_data_size = 16;
 
 static const int mk_max_arcade_buttons = 12;
+static const int mk_max_mcp_arcade_buttons = 16;
 
 // Map of the gpios :                     up, down, left, right, start, select, a,  b,  tr, y,  x,  tl
 static const int mk_arcade_gpio_maps[] = { 4,  17,    27,  22,    10,    9,      25, 24, 23, 18, 15, 14 };
@@ -329,7 +330,7 @@ static void mk_input_report(struct mk_pad * pad, unsigned char * data) {
     input_report_abs(dev, ABS_Y, !data[0]-!data[1]);
     input_report_abs(dev, ABS_X, !data[2]-!data[3]);
 	if (pad->type == MK_ARCADE_MCP23017) {	// check if MCP23017 and extend with 4.
-		for (j = 4; j < (mk_max_arcade_buttons + 4); j++) {
+		for (j = 4; j < (mk_max_mcp_arcade_buttons); j++) {
 			input_report_key(dev, mk_arcade_gpio_btn[j - 4], data[j]);
 		}
 	}
@@ -462,7 +463,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
 			__set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
 	}
 	else { //Checking for MCP23017 so it gets 4 more buttons registered to it.
-		for (i = 0; i < mk_max_arcade_buttons + 4; i++)
+		for (i = 0; i < mk_max_mcp_arcade_buttons; i++)
 			__set_bit(mk_arcade_gpio_btn[i], input_dev->keybit);
 	}
 
