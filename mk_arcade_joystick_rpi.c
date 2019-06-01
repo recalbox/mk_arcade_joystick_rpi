@@ -12,12 +12,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -36,11 +36,15 @@
 
 #include <linux/ioport.h>
 #include <asm/io.h>
-
+#include <linux/version.h>
 
 MODULE_AUTHOR("Matthieu Proucelle");
 MODULE_DESCRIPTION("GPIO and MCP23017 Arcade Joystick Driver");
 MODULE_LICENSE("GPL");
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,15,0)
+#define HAVE_TIMER_SETUP
+#endif
 
 #define MK_MAX_DEVICES		9
 
@@ -366,8 +370,15 @@ static void mk_process_packet(struct mk *mk) {
  * mk_timer() initiates reads of console pads data.
  */
 
+
+#ifdef HAVE_TIMER_SETUP
+static void mk_timer(struct timer_list *t)
+{
+    struct mk *mk = from_timer(mk, t, timer);
+#else
 static void mk_timer(unsigned long private) {
     struct mk *mk = (void *) private;
+#endif
     mk_process_packet(mk);
     mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 }
@@ -426,7 +437,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
              pr_err("Invalid gpio argument\n", pad_type);
              return -EINVAL;
         }
-    
+
     }
 
     pr_err("pad type : %d\n",pad_type);
@@ -494,7 +505,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             printk("GPIO = %d\n", pad->gpio_maps[i]);
             if(pad->gpio_maps[i] != -1){    // to avoid unused buttons
                  setGpioAsInput(pad->gpio_maps[i]);
-            }                
+            }
         }
         setGpioPullUps(getPullUpMask(pad->gpio_maps));
         printk("GPIO configured for pad%d\n", idx);
@@ -514,7 +525,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
         // Put all inputs on MCP23017 in pullup mode a second time
-        // Known bug : if you remove this line, you will not have pullups on GPIOB 
+        // Known bug : if you remove this line, you will not have pullups on GPIOB
         i2c_write(pad->mcp23017addr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
         udelay(1000);
     }
@@ -545,7 +556,11 @@ static struct mk __init *mk_probe(int *pads, int n_pads) {
     }
 
     mutex_init(&mk->mutex);
+    #ifdef HAVE_TIMER_SETUP
+    timer_setup(&mk->timer, mk_timer, 0);
+    #else
     setup_timer(&mk->timer, mk_timer, (long) mk);
+    #endif
 
     for (i = 0; i < n_pads && i < MK_MAX_DEVICES; i++) {
         if (!pads[i])
