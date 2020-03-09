@@ -2,17 +2,18 @@
 
 The Raspberry Pi GPIO Joystick Driver
 
-The mk_arcade_joystick_rpi is fully integrated in the **recalbox** distribution : see http://www.recalbox.com
-
-**The branch [hotkeybtn](https://github.com/recalbox/mk_arcade_joystick_rpi/tree/hotkeybtn) now support one more button per player in place of MCP23017 support**
+The mk_arcade_joystick_rpi is fully integrated in the **Batocera.linux** distribution
 
 ## Introduction ##
 
-The RaspberryPi is an amazing tool I discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
+The Raspberry Pi is an amazing tool I discovered a month ago. The RetroPie project made me want to build my own Arcade Cabinet with simple arcade buttons and joysticks.
 
 So i started to wire my joysticks and buttons to my raspberry pi, and I wrote the first half of this driver in order to wire my joysticks and buttons directly to the RPi GPIOs.
 
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
+
+```shell
+UPDATE 0.1.6 : Compilation with Kernel 4.15 and above fixed, Compatibility with RPI4 added, find the BCM peripherals base address dynamically and Hotkey buttons added
 
 UPDATE 0.1.5 : Added GPIO customization
 
@@ -29,6 +30,8 @@ As the module will not load with recent kernel and headers, we add the possibili
 UPDATE 0.1.1 : RPi B+ VERSION :
 
 The new Raspberry Pi B+ Revision brought us 9 more GPIOs, so we are now able to connect 2 joysticks and 12 buttons directly to GPIOs. I updated the driver in order to support the 2 joysticks on GPIO configuration.
+```
+
 
 ### Even More Joysticks ###
 
@@ -37,6 +40,7 @@ A little cheap chip named MCP23017 allows you to add 16 external GPIO, and take 
 If you want to use more than one chip, the i2c protocol lets you choose different addresses for the connected peripheral, but all use the same SDA and SCL GPIOs.
 
 In theory you can connect up to 8 chips so 8 joystick.
+
 
 ## The Software ##
 The joystick driver is based on the gamecon_gpio_rpi driver by [marqs](https://github.com/marqs85)
@@ -50,7 +54,6 @@ It uses internal pull-ups of RPi and of MCP23017, so all switches must be direct
 
 ## Common Case : Joysticks connected to GPIOs ##
 
-
 ### Pinout ###
 Let's consider a 6 buttons cab panel with this button order : 
 
@@ -63,84 +66,14 @@ With R = TR and L = TL
 
 Here is the rev B GPIO pinout summary :
 
-![GPIO Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
+![GPIO Interface](https://github.com/genetik57/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
 
-If you have a Rev B+ RPi or RPi2:
+If you have a Rev B+ RPi or RPi2/RPi3/RPi4:
 
-
-![GPIO Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
+![GPIO Interface](https://github.com/genetik57/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
 
 Of course the ground can be common for all switches.
 
-### Installation ###
-
-### Installation Script ###
-
-Download the installation script : 
-```shell
-mkdir mkjoystick
-cd mkjoystick
-wget https://github.com/recalbox/mk_arcade_joystick_rpi/releases/download/v0.1.4/install.sh
-```
-
-Update your system :
-```shell
-sudo sh ./install.sh updatesystem
-sudo reboot
-```
-
-Don't forget to reboot (or the next part won't work) and re-run the script without any arguments :
-```shell
-sudo sh ./install.sh
-```
-
-Now jump to [Loading the driver](#loading-the-driver)
-
-
-### Manual Installation ###
-Update system :
-```shell
-sudo apt-get update
-sudo apt-get upgrade
-sudo rpi-update
-```
-
-
-1 - Install all you need :
-```shell
-sudo apt-get install -y --force-yes dkms cpp-4.7 gcc-4.7 git joystick
-```
-
-2 - Install last kernel headers :
-```shell
-sudo apt-get install -y --force-yes raspberrypi-kernel-headers
-```
-
-3.a - Install driver from release (prefered):  
-```shell
-wget https://github.com/recalbox/mk_arcade_joystick_rpi/releases/download/v0.1.4/mk-arcade-joystick-rpi-0.1.4.deb
-sudo dpkg -i mk-arcade-joystick-rpi-0.1.4.deb
-```
-3.b - Or compile and install with dkms:  
-
-3.b.1 - Download the files:
-```shell
-git clone https://github.com/pinuct/mk_arcade_joystick_rpi/tree/customgpio
-```
-3.b.2 - Create a folder under  "/usr/src/*module*-*module-version*/"
-```shell
-mkdir /usr/src/mk_arcade_joystick_rpi-0.1.5/
-```
-3.b.3 - Copy the files into the folder:
-```shell
-cd mk_arcade_joystick_rpi/
-cp -a * /usr/src/mk_arcade_joystick_rpi-0.1.5/
-```
-3.b.4 - Compile and install the module:
-```shell
-dkms build -m mk_arcade_joystick_rpi -v 0.1.5
-dkms install -m mk_arcade_joystick_rpi -v 0.1.5
-```
 
 ### Loading the driver ###
 
@@ -174,6 +107,7 @@ Where *pinx* is the number of the gpio you want. There are 12 posible gpio with 
 
 The GPIO joystick 1 events will be reported to the file "/dev/input/js0" and the GPIO joystick 2  events will be reported to "/dev/input/js1"
 
+
 ### Auto load at startup ###
 
 Open `/etc/modules` :
@@ -198,6 +132,7 @@ and add the module configuration :
 options mk_arcade_joystick_rpi map=1,2
 ```
 
+
 ### Testing ###
 
 Use the following command to test joysticks inputs :
@@ -211,8 +146,7 @@ jstest /dev/input/js0
 
 Here is the MCP23017 pinout summary :
 
-
-![MCP23017 Interface](https://github.com/recalbox/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
+![MCP23017 Interface](https://github.com/genetik57/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
 
 
 ### Preparation of the RPi for MCP23017###
@@ -245,15 +179,13 @@ Reboot or load the two module :
 modprobe i2c-bcm2708 i2c-dev
 ```
 
-### Preparation of the MCP23017 chip ###
 
+### Preparation of the MCP23017 chip ###
 
 You must set the pins A0 A1 and A2 to 0 or 1 in order to set the i2c address of the chip. If you only have 1 chip, connect the 3 pins to the ground.
 Just connect one of the pins to 3.3v to set its state to 1 and change the i2c address of the MCP23017.
 
 You must also connect the RESET pin to 3.3v.
-
-
 
 
 ### Configuration ###
@@ -286,15 +218,9 @@ sudo modprobe mk_arcade_joystick_rpi map=1,0x20,0x24
 ```
 
 
-## Known Bugs ##
-If you try to read or write on i2c with a tool like i2cget or i2cset when the driver is loaded, you are gonna have a bad time... 
-
-If you try i2cdetect when the driver is running, it will show you strange peripheral addresses...
-
-256MB Raspberry Pi Model B is not supported by the current driver. If you want to make the driver work on your old RPi, you will have to change the address of BSC1_BASE to (BCM2708_PERI_BASE + 0x205000) in order to use the correct i2c address, and recompile.
-
 Credits
 -------------
 -  [gamecon_gpio_rpi](https://github.com/petrockblog/RetroPie-Setup/wiki/gamecon_gpio_rpi) by [marqs](https://github.com/marqs85)
 -  [RetroPie-Setup](https://github.com/petrockblog/RetroPie-Setup) by [petRockBlog](http://blog.petrockblock.com/)
 -  [Low Level Programming of the Raspberry Pi in C](http://www.pieter-jan.com/node/15) by [Pieter-Jan](http://www.pieter-jan.com/)
+-  [For these numerous works to maintain this project](https://github.com/cmitu/mk_arcade_joystick_rpi/tree/retropie-hotkeybtn) by [cmitu](https://github.com/cmitu/)
