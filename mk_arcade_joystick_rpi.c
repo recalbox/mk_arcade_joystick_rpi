@@ -423,7 +423,7 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             pr_err("Custom device needs gpio argument\n");
             return -EINVAL;
         } else if(gpio_cfg.nargs != 12){
-             pr_err("Invalid gpio argument\n", pad_type);
+             pr_err("Invalid gpio argument\n");
              return -EINVAL;
         }
     
