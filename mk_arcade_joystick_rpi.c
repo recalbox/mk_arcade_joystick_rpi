@@ -148,7 +148,7 @@ struct mk_pad {
     enum mk_type type;
     char phys[32];
     int mcp23017addr;
-    int gpio_maps[12]
+    int gpio_maps[12];
 };
 
 struct mk_nin_gpio {
