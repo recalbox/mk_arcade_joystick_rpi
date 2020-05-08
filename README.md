@@ -13,13 +13,15 @@ So i started to wire my joysticks and buttons to my raspberry pi, and I wrote th
 However, the Raspberry Pi Board B Rev 2 has a maximum of 21 usable GPIOs, not enough to wire all the 28 switches (2 joystick and 20 buttons) that a standard panel requires.
 
 ```shell
-UPDATE 0.1.6 : Compilation with Kernel 4.15 and above fixed, Compatibility with RPI4 added, find the BCM peripherals base address dynamically and Hotkey buttons added
+UPDATE 0.1.7 : Compatibility with rpi4 and some adjustments (Big thanks to @Gemba)
+
+UPDATE 0.1.6 : Compilation with Kernel 4.15 and above fixed + find the BCM peripherals base address dynamically + Hotkey buttons added (Big thanks to @cmitu)
 
 UPDATE 0.1.5 : Added GPIO customization
 
-UPDATE 0.1.4 : Compatibily with rpi2 
+UPDATE 0.1.4 : Compatibility with rpi2 and rpi3
 
-UPDATE 0.1.3 : Compatibily with 3.18.3 :
+UPDATE 0.1.3 : Compatibility with 3.18.3 :
 
 The driver installation now works with 3.18.3 kernel, distributed with the last firmware.
 
@@ -66,11 +68,11 @@ With R = TR and L = TL
 
 Here is the rev B GPIO pinout summary :
 
-![GPIO Interface](https://github.com/genetik57/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
+![GPIO Interface](https://github.com/batocera-linux/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOs.png)
 
 If you have a Rev B+ RPi or RPi2/RPi3/RPi4:
 
-![GPIO Interface](https://github.com/genetik57/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
+![GPIO Interface](https://github.com/batocera-linux/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_GPIOsb+.png)
 
 Of course the ground can be common for all switches.
 
@@ -146,7 +148,7 @@ jstest /dev/input/js0
 
 Here is the MCP23017 pinout summary :
 
-![MCP23017 Interface](https://github.com/genetik57/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
+![MCP23017 Interface](https://github.com/batocera-linux/mk_arcade_joystick_rpi/raw/master/wiki/images/mk_joystick_arcade_mcp23017.png)
 
 
 ### Preparation of the RPi for MCP23017###
@@ -223,4 +225,5 @@ Credits
 -  [gamecon_gpio_rpi](https://github.com/petrockblog/RetroPie-Setup/wiki/gamecon_gpio_rpi) by [marqs](https://github.com/marqs85)
 -  [RetroPie-Setup](https://github.com/petrockblog/RetroPie-Setup) by [petRockBlog](http://blog.petrockblock.com/)
 -  [Low Level Programming of the Raspberry Pi in C](http://www.pieter-jan.com/node/15) by [Pieter-Jan](http://www.pieter-jan.com/)
--  [For these numerous works to maintain this project](https://github.com/cmitu/mk_arcade_joystick_rpi/tree/retropie-hotkeybtn) by [cmitu](https://github.com/cmitu/)
+-  [For these numerous works to maintain this project](https://github.com/cmitu/mk_arcade_joystick_rpi/tree/retropie-hotkeybtn) by [cmitu](https://github.com/cmitu/) and [Gemba](https://github.com/Gemba/)
+-  All people who recognize themselves ♥
