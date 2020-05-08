@@ -44,11 +44,11 @@ MODULE_AUTHOR("Matthieu Proucelle");
 MODULE_DESCRIPTION("GPIO and MCP23017 Arcade Joystick Driver");
 MODULE_LICENSE("GPL");
 
-#define MK_MAX_DEVICES		2
-#define MK_MAX_BUTTONS		13
+#define MK_MAX_DEVICES      2
+#define MK_MAX_BUTTONS      13
 
-#define PERI_BASE	mk_bcm2708_peri_base
-#define GPIO_BASE	(PERI_BASE + 0x200000) /* GPIO controller */
+#define PERI_BASE   mk_bcm2708_peri_base
+#define GPIO_BASE   (PERI_BASE + 0x200000) /* GPIO controller */
 
 #define INP_GPIO(g) *(gpio+((g)/10)) &= ~(7<<(((g)%10)*3))
 #define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
@@ -59,7 +59,25 @@ MODULE_LICENSE("GPL");
 #define GPIO_SET *(gpio+7)
 #define GPIO_CLR *(gpio+10)
 
-#define BSC1_BASE		(PERI_BASE + 0x804000)
+#define BSC1_BASE       (PERI_BASE + 0x804000)
+
+/*
+ * defines for BCM 2711
+ *
+ * refer to "Chapter 5. General Purpose I/O (GPIO)"
+ * in "BCM2711 ARM Peripherals", 2020-02-05
+ */
+#define PUD_2711_MASK       0x3
+#define PUD_2711_REG_OFFSET(p)  ((p) / 16)
+#define PUD_2711_REG_SHIFT(p)   (((p) % 16) * 2)
+
+#define BCM2711_PULL_UP     0x1
+
+/* BCM 2711 has a different mechanism for pin pull-up/down/enable  */
+#define GPIO_PUP_PDN_CNTRL_REG0 57      /* Pin pull-up/down for pins 15:0  */
+#define GPIO_PUP_PDN_CNTRL_REG1 58      /* Pin pull-up/down for pins 31:16 */
+#define GPIO_PUP_PDN_CNTRL_REG2 59      /* Pin pull-up/down for pins 47:32 */
+#define GPIO_PUP_PDN_CNTRL_REG3 60      /* Pin pull-up/down for pins 57:48 */
 
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,15,0)
@@ -67,6 +85,7 @@ MODULE_LICENSE("GPL");
 #endif
 
 static volatile unsigned *gpio;
+static int is_2711;
 
 struct mk_config {
     int args[MK_MAX_DEVICES];
@@ -105,7 +124,7 @@ enum mk_type {
     MK_MAX
 };
 
-#define MK_REFRESH_TIME	HZ/100
+#define MK_REFRESH_TIME HZ/100
 
 struct mk_pad {
     struct input_dev *dev;
@@ -225,6 +244,22 @@ static int getPullUpMask(int gpioMap[]){
     return mask;
 }
 
+static void set_gpio_pullups_2711(int gpio_map[]) {
+    int i;
+    for (i = 0; i < MK_MAX_BUTTONS; i++) {
+        if (gpio_map[i] != -1) {
+            u32 pud_reg = GPIO_PUP_PDN_CNTRL_REG0
+                          + PUD_2711_REG_OFFSET(gpio_map[i]);
+            u32 shift = PUD_2711_REG_SHIFT(gpio_map[i]);
+            u32 val = *(gpio + pud_reg);
+            val &= ~(PUD_2711_MASK << shift);
+            val |= (BCM2711_PULL_UP << shift);
+            *(gpio + pud_reg) = val;
+        }
+    }
+
+}
+
 static void mk_gpio_read_packet(struct mk_pad * pad, unsigned char *data) {
     int i;
 
@@ -303,14 +338,12 @@ static void mk_close(struct input_dev *dev) {
     mutex_unlock(&mk->mutex);
 }
 
-static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
+static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type) {
     struct mk_pad *pad = &mk->pads[idx];
     struct input_dev *input_dev;
-    int i, pad_type;
+    int i;
     int err;
-    pr_err("pad type : %d\n",pad_type_arg);
-
-    pad_type = pad_type_arg;
+    pr_info("pad type : %d\n", pad_type);
 
     if (pad_type < 1 || pad_type >= MK_MAX) {
         pr_err("Pad type %d unknown\n", pad_type);
@@ -337,13 +370,12 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
             pr_err("Custom device needs gpio argument\n");
             return -EINVAL;
         } else if(gpio_cfg2.nargs != MK_MAX_BUTTONS){
-             pr_err("Invalid gpio argument\n", pad_type);
+             pr_err("Invalid gpio argument pad_type=%d\n", pad_type);
              return -EINVAL;
         }
     
     }
 
-    pr_err("pad type : %d\n",pad_type);
     pad->dev = input_dev = input_allocate_device();
     if (!input_dev) {
         pr_err("Not enough memory for input device\n");
@@ -401,8 +433,13 @@ static int __init mk_setup_pad(struct mk *mk, int idx, int pad_type_arg) {
         }
     }                
     
-    setGpioPullUps(getPullUpMask(pad->gpio_maps));
-    printk("GPIO configured for pad%d\n", idx);
+    is_2711 = *(gpio+GPIO_PUP_PDN_CNTRL_REG3) != 0x6770696f;
+    if (is_2711) {
+        set_gpio_pullups_2711(pad->gpio_maps);
+    } else {
+        setGpioPullUps(getPullUpMask(pad->gpio_maps));
+    }
+    pr_info("GPIO configured for pad%d\n", idx);
 
     err = input_register_device(pad->dev);
     if (err)
