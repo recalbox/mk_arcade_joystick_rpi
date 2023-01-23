@@ -1,6 +1,7 @@
 /*
  *  Arcade Joystick Driver for RaspberryPi
  *
+ *  Copyright (c) 2023 Daniel Moreno
  *  Copyright (c) 2018 Mark Spaeth
  *  Copyright (c) 2014 Matthieu Proucelle
  *
@@ -272,7 +273,7 @@ static void wait_i2c_done(char dev) {
     } else if (dev==1) {
         while ((!((BSC1_S) & BSC_S_DONE)))
 	    udelay(100);
-    } else 
+    } else
         pr_err("Invalid interface number [0,1] (%d)\n",dev);
 }
 
@@ -291,7 +292,7 @@ static void i2c_write(char dev, char dev_addr, char reg_addr, char *buf, unsigne
 	BSC0_S = CLEAR_STATUS; // Reset status bits (see #define)
 	BSC0_C = START_WRITE; // Start Write (see #define)
 	wait_i2c_done(dev);
-	
+
     } else if (dev==1) {
         BSC1_A = dev_addr;
 	BSC1_DLEN = len + 1; // one byte for the register address, plus the buffer length
@@ -301,8 +302,8 @@ static void i2c_write(char dev, char dev_addr, char reg_addr, char *buf, unsigne
 	BSC1_S = CLEAR_STATUS; // Reset status bits (see #define)
 	BSC1_C = START_WRITE; // Start Write (see #define)
 	wait_i2c_done(dev);
-	
-    } else 
+
+    } else
         pr_err("Invalid interface number [0,1] (%d)\n",dev);
 }
 
@@ -311,7 +312,7 @@ static void i2c_write(char dev, char dev_addr, char reg_addr, char *buf, unsigne
 static void i2c_read(char dev, char dev_addr, char reg_addr, char *buf, unsigned short len) {
     unsigned short bufidx;
     bufidx = 0;
-    
+
     i2c_write(dev, dev_addr, reg_addr, NULL, 0);
     memset(buf, 0, len);             // clear the buffer
 
@@ -326,7 +327,7 @@ static void i2c_read(char dev, char dev_addr, char reg_addr, char *buf, unsigned
 	    while ((BSC0_S & BSC_S_RXD) && (bufidx < len))
 	        buf[bufidx++] = BSC0_FIFO;
 	} while ((!(BSC0_S & BSC_S_DONE)));
-	
+
     } else if (dev==1) {
         BSC1_DLEN = len;
 	BSC1_S = CLEAR_STATUS;       // Reset status bits (see #define)
@@ -338,8 +339,8 @@ static void i2c_read(char dev, char dev_addr, char reg_addr, char *buf, unsigned
 	    while ((BSC1_S & BSC_S_RXD) && (bufidx < len))
 	        buf[bufidx++] = BSC1_FIFO;
 	} while ((!(BSC1_S & BSC_S_DONE)));
-	
-    } else 
+
+    } else
         pr_err("Invalid interface number [0,1] (%d)\n",dev);
 }
 
@@ -420,8 +421,8 @@ static void mk_process_packet(struct mk *mk) {
  * mk_timer() initiates reads of console pads data.
  */
 
-static void mk_timer(unsigned long private) {
-    struct mk *mk = (void *) private;
+static void mk_timer(struct timer_list *t) {
+    struct mk *mk = (void *) mk_base;
     mk_process_packet(mk);
     mod_timer(&mk->timer, jiffies + MK_REFRESH_TIME);
 }
@@ -460,7 +461,7 @@ static int __init mk_setup_pad_i2c(struct mk *mk, int idx, char i2cdev, int i2ca
         pr_err("Device count exceeds max\n");
         return -EINVAL;
     }
-	
+
     if (i2cdev<0 || i2cdev>1) {
         pr_err("Only i2c-0 and i2c-1 are supported (%d)\n",i2cdev);
 	return -EINVAL;
@@ -470,9 +471,9 @@ static int __init mk_setup_pad_i2c(struct mk *mk, int idx, char i2cdev, int i2ca
         pr_err("Invalid i2c address for MCP23017 (%2x)\n",i2caddr);
 	return -EINVAL;
     }
-	       
+
     pr_err("Input %d, Pad type : %d\n",idx,MK_ARCADE_MCP23017);
-    
+
     if (!(pad->dev = input_allocate_device())) {
         pr_err("Not enough memory for input device\n");
         return -ENOMEM;
@@ -500,7 +501,7 @@ static int __init mk_setup_pad_i2c(struct mk *mk, int idx, char i2cdev, int i2ca
         input_set_abs_params(pad->dev, ABS_X + i, -1, 1, 0, 0);
     for (i = 0; i < mk_max_mcp_arcade_buttons; i++)
         __set_bit(mk_arcade_gpio_btn[i], pad->dev->keybit);
-    
+
     i2c_init(pad->i2cdev);
     udelay(1000);
     // Put all GPIOA inputs on MCP23017 in INPUT mode
@@ -516,7 +517,7 @@ static int __init mk_setup_pad_i2c(struct mk *mk, int idx, char i2cdev, int i2ca
     i2c_write(i2cdev, i2caddr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
     udelay(1000);
     // Put all inputs on MCP23017 in pullup mode a second time
-    // Known bug : if you remove this line, you will not have pullups on GPIOB 
+    // Known bug : if you remove this line, you will not have pullups on GPIOB
     i2c_write(i2cdev, i2caddr, MPC23017_GPIOB_PULLUPS_MODE, &FF, 1);
     udelay(1000);
     printk("I2C-%d,%02x configured for pad%d\n",i2cdev,i2caddr,idx);
@@ -525,7 +526,7 @@ static int __init mk_setup_pad_i2c(struct mk *mk, int idx, char i2cdev, int i2ca
         input_free_device(pad->dev);
         pad->dev = NULL;
     }
-    
+
     return err;
 };
 
@@ -538,7 +539,7 @@ static int __init mk_setup_pad_gpio(struct mk *mk, int idx, int pad_type) {
         pr_err("Device count exceeds max\n");
         return -EINVAL;
     }
-	
+
     pr_err("Pad type : %d\n",pad_type);
 
     if (pad_type < 1 || pad_type >= MK_MAX) {
@@ -558,7 +559,7 @@ static int __init mk_setup_pad_gpio(struct mk *mk, int idx, int pad_type) {
     }
 
     pr_err("Input %d, Pad type : %d\n",idx,pad_type);
-    
+
     if (!(pad->dev = input_allocate_device())) {
         pr_err("Not enough memory for input device\n");
         return -ENOMEM;
@@ -618,7 +619,7 @@ static int __init mk_setup_pad_gpio(struct mk *mk, int idx, int pad_type) {
         input_free_device(pad->dev);
         pad->dev = NULL;
     }
-    
+
     return err;
 }
 
@@ -631,14 +632,14 @@ static struct mk __init *mk_probe_i2c(struct mk *mk, int *pads, int n_pads, char
         err=mk_setup_pad_i2c(mk, mk->count, dev, pads[i]);
 	if (!err) mk->count++;
     }
-    
+
     return 0;
 }
 
 static struct mk __init *mk_probe(struct mk *mk, int *pads, int n_pads) {
     int i;
     int err;
-    
+
     //    pr_err("map: %d\n",n_pads);
     for (i = 0; i <n_pads; i++) {
       if (pads[i]>MK_MAX_DEVICES) {
@@ -649,7 +650,7 @@ static struct mk __init *mk_probe(struct mk *mk, int *pads, int n_pads) {
 
       if (!err) mk->count++;
     }
-    
+
     return 0;
 }
 
@@ -678,7 +679,7 @@ static int __init mk_init(void) {
     }
 
     mutex_init(&mk_base->mutex);
-    setup_timer(&mk_base->timer, mk_timer, (long) mk_base);
+    timer_setup(&mk_base->timer, mk_timer, 0);
     mk_base->count=0;
 
     mk_probe(mk_base, mk_cfg.args, mk_cfg.nargs);
@@ -702,7 +703,7 @@ static void __exit mk_exit(void) {
 	        input_unregister_device(mk_base->pads[i].dev);
         kfree(mk_base);
     }
-    
+
     iounmap(gpio);
     iounmap(bsc1);
     iounmap(bsc0);
